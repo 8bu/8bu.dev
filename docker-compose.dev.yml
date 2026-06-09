@@ -1,0 +1,24 @@
+services:
+  postgres:
+    # pgvector-enabled PG16 (the GraphRAG graph schema needs the `vector`
+    # extension). Same PG major as the prior postgres:16 image, so the data
+    # volume is compatible — only the extension binaries are added.
+    image: pgvector/pgvector:pg16
+    container_name: portf-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: portf
+    ports:
+      - "5434:5432" # 5434 host-side to avoid clashing with cosimi's 5432
+    volumes:
+      - portf_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d portf"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  portf_pg_data:

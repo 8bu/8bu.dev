@@ -1,0 +1,16 @@
+packages:
+  - "apps/*"
+  - "services/*"
+  - "packages/*"
+
+# Allowlist for postinstall scripts (pnpm 11+). Deps NOT listed here have their
+# build scripts blocked. Add entries deliberately — each is permission to run
+# arbitrary code at install time.
+allowBuilds:
+  esbuild: true # tsx ships esbuild and needs its native-binary postinstall
+  sharp: false # transitive of wrangler; nothing on our path does image processing (og PNGs use resvg). Deny.
+  workerd: false # wrangler's local-dev runtime; deploy/dry-run bundle via esbuild and never need it. Flip to true only for `wrangler dev`.
+
+# Supply-chain mitigation — refuse to resolve any package version published less
+# than 1 week ago. Mitigates the "publish malicious version, yank within hours" pattern.
+minimumReleaseAge: 10080 # minutes; 60 * 24 * 7

@@ -1,0 +1,32 @@
+name = "portf-api"
+main = "src/worker.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[env.portf]
+name = "portf-api"
+routes = [{ pattern = "8bu.dev/api/*", zone_name = "8bu.dev" }]
+
+[[env.portf.hyperdrive]]
+binding = "HYPERDRIVE"
+id = "7994710a22e94e3fab65ac8deaa79a59"
+
+# Workers-AI binding — the prod embedder (bge-m3) reads it via runWithAi.
+[env.portf.ai]
+binding = "AI"
+
+[env.portf.vars]
+LOG_LEVEL = "info"
+EXPOSE_MATCH_INSIGHTS = "true"
+SSE_DELAY_MODE = "token"
+SSE_DELAY_BASE_MS = "30"
+SSE_DELAY_JITTER_MS = "20"
+# @cosimi runtime: prod embeds with Workers-AI (NOT the ollama default — an
+# unset EMBEDDER would route prod to localhost:11434 and fail at embed time).
+EMBEDDER = "workers-ai"
+EMBEDDING_DIM = "1024"
+WORKERS_AI_EMBED_MODEL = "@cf/baai/bge-m3"
+RETRIEVE_TOP_K = "8"
+RETRIEVE_SEED_K = "4"
+RETRIEVE_MAX_HOPS = "2"
+RETRIEVE_MIN_SIMILARITY = "0.45"

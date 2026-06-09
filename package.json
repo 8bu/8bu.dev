@@ -1,0 +1,33 @@
+{
+  "name": "8bu.dev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "build": "turbo run build",
+    "lint": "oxlint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "oxfmt --ignore-path .gitignore --ignore-path .oxfmtignore",
+    "format:check": "oxfmt --check --ignore-path .gitignore --ignore-path .oxfmtignore",
+    "db:up": "docker compose -f docker-compose.dev.yml up -d --wait postgres",
+    "db:down": "docker compose -f docker-compose.dev.yml down",
+    "db:reset": "docker compose -f docker-compose.dev.yml down -v && pnpm db:up",
+    "migrate": "tsx --env-file=.env packages/db/src/migrate.ts up",
+    "seed": "tsx --env-file=.env packages/db/src/scripts/seed.ts seeds/portf/*.yaml --locale=en",
+    "deploy": "bash deploy.sh"
+  },
+  "devDependencies": {
+    "@8budev/oxlint-config": "workspace:*",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.0.0",
+    "tsx": "^4.19.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=11.0"
+  },
+  "packageManager": "pnpm@11.0.0"
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@8budev/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc --noEmit",
+    "deploy": "wrangler deploy --env portf",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint .",
+    "test": "vitest run",
+    "ingest": "tsx --env-file=.env scripts/ingest.ts"
+  },
+  "dependencies": {
+    "@8budev/core": "workspace:*",
+    "@8budev/logger": "workspace:*",
+    "@cosimi/adapter-embed-ollama": "^0.1.0",
+    "@cosimi/adapter-embed-workers-ai": "^0.1.0",
+    "@cosimi/adapter-postgres": "^0.1.0",
+    "@cosimi/core": "^0.1.0",
+    "@cosimi/sdk": "^0.1.0",
+    "@hono/node-server": "^1.13.0",
+    "hono": "^4.0.0",
+    "valibot": "^1.0.0"
+  },
+  "devDependencies": {
+    "@8budev/db": "workspace:*",
+    "@8budev/tsconfig": "workspace:*",
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@cosimi/adapter-llm-anthropic": "^0.1.0",
+    "@cosimi/adapter-storage": "^0.1.0",
+    "@types/node": "^22.0.0",
+    "postgres": "^3.4.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "wrangler": "^3.0.0"
+  },
+  "peerDependencies": {
+    "postgres": "^3.4.0"
+  }
+}
