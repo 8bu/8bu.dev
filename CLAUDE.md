@@ -61,23 +61,38 @@ the prod Worker route `8bu.dev/api/*`.
 
 ## Chat answer cascade (services/api/src/services/chat-handler.ts)
 
-`runChat` tries layers in order, returning on first hit:
+`runChat` tries layers in order, returning on first hit. **There is no canonical
+layer** (`canonical.ts` was removed — chip labels / common questions are now seed
+pairs matched semantically, not exact-key lookups):
 
-1. **Canonical override** (`canonical.ts`) — chip labels + common questions keyed
-   by `normalize(label)`. Deterministic, on-topic. Checked first because GraphRAG
-   ranking over short personal facts is noisy. May attach `image`/`mood` media.
-2. **Seed pairs** — document-less `source='seed'` pairs, matched by **own embedding
-   cosine** (the SDK retriever can't serve chunk-less pairs). Hit at/above
-   `SEED_MIN = 0.70` answers; reads `pairs.topic` directly for the deep-link.
+1. **Tier-0 deflect guard** (`deflect.ts`, `deflectInput`) — deterministic screen
+   run BEFORE any embedding. Catches slurs/insults (whole-token match after
+   leet/repeat normalization) and sensitive-topic questions (sexuality, religion,
+   politics, substances, crude — phrase/framed regex). Precedence: hate slur >
+   insult > sensitive scope. **Sensitive topics live ONLY here, never as seed
+   pairs** — a seed pair below `SEED_MIN` would fall through to retrieve() and
+   could leak a personal fact. Emits a fixed deflection, tier `exact`.
+2. **Seed pairs** (`seedAnswer`) — document-less `source='seed'` pairs, matched by
+   **own embedding cosine** (the SDK retriever can't serve chunk-less pairs). Hit
+   at/above `SEED_MIN = 0.70` answers; reads `pairs.topic` directly for the
+   deep-link and `pairs.image_slug`/`pairs.mood` for media. Tier id `2` (same class
+   as retrieve()).
 3. **SDK retrieve()** — `createCosimi({ sql, embedder }).retrieve()`. First
    answerable hit ≥ `DEFLECT_BELOW = 0.55` answers; topic derived from the hit's
-   source `documents.topic`.
+   source `documents.topic`. No per-pair media (FE may still map a content image by
+   topic). Tier id `2`.
 4. **No match** — upsert `unanswered`, emit `no_match` (FE streams a deflection).
 
 `LOW_CONFIDENCE_BELOW = 0.55` flags a weak hit so the FE softens its badge. These
 three thresholds are **module consts** — tune in `chat-handler.ts`, not env.
-`EXPOSE_MATCH_INSIGHTS` (env, default true) gates whether tier/confidence/score
-leak to the client; **media (`imageSlug`/`mood`) is never gated** — it's content.
+`EXPOSE_MATCH_INSIGHTS` (env, default true) gates whether tier/confidence/score/
+topic/locale leak to the client; **media (`imageSlug`/`mood`) is never gated** —
+it's content. Note: a non-null `tier` is required or the FE suppresses the artifact
+deep-link (`features/artifacts/match.ts`).
+
+Seed pair media: `seeds/interview.yaml` entries carry `image:`/`mood:` keys
+(mapped to the `image_slug`/`mood` columns on upsert); `mood` resolves to a
+self-hosted reaction mp4, `image` to `/media/img/<slug>.webp`.
 
 ## Embedder
 
