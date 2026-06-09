@@ -5,6 +5,10 @@ export interface CanonicalAnswer {
   response: string;
   /** Artifact deep-link slug, e.g. "portfolio/artifact/wegopro". Omit for non-artifact answers. */
   topic?: string;
+  /** Content-image slug → /media/img/<slug>.webp. Omit for none. */
+  image?: string;
+  /** Reaction-GIF mood → /media/gif/<mood>/* pool. Omit for none. */
+  mood?: string;
 }
 
 /**
@@ -17,6 +21,7 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
   "introduce yourself": {
     response:
       "I'm Long - a senior web developer with 10+ years of experience, based in Ho Chi Minh City. I ship production web apps in Vue/Nuxt, React/Next, and TypeScript across SaaS, DeFi, and design systems. I work on the product, not the task.",
+    mood: "wave",
   },
   "who are you": {
     response:
@@ -25,6 +30,7 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
   "what does 8bu mean": {
     response:
       '8bu means "8-bit user". One byte didn\'t sound as cool, and 8 bits feels atomic to me - the smallest unit that means something. It fits how I learn: take something complex and reduce it to its simplest form.',
+    mood: "thinking",
   },
   "how old are you": {
     response: "I'm 30, born in 1996.",
@@ -35,6 +41,7 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
   education: {
     response:
       "I studied Computational and Applied Mathematics at Ton Duc Thang University in HCMC from 2013 to 2016. I left in my third year to work - family was in heavy debt - so no degree.",
+    mood: "shrug",
   },
   "how did you start coding": {
     response:
@@ -62,10 +69,12 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
   "why should i hire you": {
     response:
       "I migrate live production codebases without halting delivery - Nuxt 2 to 4, Vue 2 to 3 - and I own frontend technical direction while mentoring the team. 10+ years across SaaS, DeFi, and design systems. I work on the product, not the task.",
+    mood: "hype",
   },
   "what makes you different": {
     response:
       "Most developers avoid legacy migrations. I lead them - on live products - and own the frontend direction end-to-end, keeping the product shipping while I modernize it underneath. Breadth plus depth: SaaS, DeFi, and design systems over a decade.",
+    mood: "proud",
   },
   "your strengths": {
     response:
@@ -213,6 +222,49 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
       "SuperLauncher is an IDO launchpad with staking and a marketplace. I was a core frontend member from day zero at BlockDevs, built the architecture from scratch, wrote a custom Vue 3 wallet module, and contributed fixes upstream to WalletConnect.",
     topic: "portfolio/artifact/superlauncher",
   },
+  ntwrx: {
+    response:
+      "NTWRX is a Web3 creator-and-brand community - it connects influencers with brands to run social campaigns, then rewards engagement on-chain in $NTWRX. I worked on it as designer and web dev: the campaign-discovery and reward UI on Nuxt + Vue 3 + Tailwind, wired to Ethereum smart contracts. Currently in beta.",
+    topic: "portfolio/artifact/ntwrx",
+  },
+  "what is ntwrx": {
+    response:
+      "NTWRX is a Web3 platform connecting creators and brands for social-media campaigns - browse campaigns, engage across platforms, and earn $NTWRX based on how your content performs, settled through Ethereum smart contracts. In beta. I was designer and web dev on the dapp.",
+    topic: "portfolio/artifact/ntwrx",
+  },
+  "tell me about ntwrx": {
+    response:
+      "NTWRX connects influencers with brands for campaigns and rewards engagement on-chain in $NTWRX. I did design and front-end - campaign discovery, cross-platform engagement tracking, the token-reward surfaces, and a quest-creation studio for brands - built on Nuxt + Vue 3 + Tailwind over an Ethereum contract layer. Still in beta.",
+    topic: "portfolio/artifact/ntwrx",
+  },
+  "what did you do at ntwrx": {
+    response:
+      "Designer and web dev. I took screens from design through to shipped UI - campaign discovery, engagement tracking, token-reward surfaces, the brand quest-creation studio - on Nuxt + Vue 3 + Tailwind, integrating the Ethereum smart-contract layer. Held a consistent dark, Web3-native look across the product.",
+    topic: "portfolio/artifact/ntwrx",
+  },
+
+  // --- Figma résumé template ---
+  "figma resume template": {
+    response:
+      "It's a clean résumé / CV / cover-letter template I designed and published on the Figma Community - built entirely with auto layout, so sections reflow when you add or remove anything. Made for developers, designers, and product folks who want a no-nonsense CV that's easy to edit.",
+    topic: "portfolio/artifact/figma-resume-template",
+  },
+  "what is the resume template": {
+    response:
+      "A minimal résumé, CV, and cover-letter template I built in Figma, entirely with auto layout - add or remove a role and everything reflows, no manual nudging. I published it on the Figma Community so anyone can duplicate and edit it. I built the system instead of a one-off so my own CV stays trivial to keep current.",
+    topic: "portfolio/artifact/figma-resume-template",
+  },
+  "your resume template": {
+    response:
+      "My Clean Résumé template - a minimal résumé / CV / cover-letter system built entirely with Figma auto layout, published on the Figma Community. Layout discipline and typographic restraint, with auto layout doing the heavy lifting so it reflows as you edit.",
+    topic: "portfolio/artifact/figma-resume-template",
+  },
+  "did you make a figma template": {
+    response:
+      "Yes - a clean résumé / CV / cover-letter template, built entirely with auto layout and published on the Figma Community. I made it so my own CV would be trivial to keep current, then shared it for anyone who wants the same.",
+    topic: "portfolio/artifact/figma-resume-template",
+  },
+
   "tell me about the nuxt migration": {
     response:
       "At WegoPro I migrated a four-year Nuxt 2 codebase to Vue 3 using Vue 3 web components as a bridge layer - new features authored as custom elements inside the running Nuxt 2 host, no big-bang rewrite. I solo-migrated the back-office to Nuxt 4 + Nuxt UI.",
@@ -448,6 +500,68 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
     response: "linkedin.com/in/8bu",
   },
 
+  // --- Out-of-scope / personal boundary (deflect; never affirm with a bare yes/no) ---
+  "are you gay": {
+    response:
+      "That's outside what this chat is for - it's here to talk about my work, my projects, and how I build. Ask me anything on that front and I'm all yours.",
+  },
+  "are you straight": {
+    response:
+      "That's not really what this chat covers - it's here for my work, my projects, and how I build. Happy to dig into any of that.",
+  },
+  "are you bisexual": {
+    response:
+      "That's outside the scope here - this chat is about my work and how I build. Ask me about the projects or the stack instead.",
+  },
+  "are you homosexual": {
+    response:
+      "That's outside what this chat is for - it's here to talk about my work and my projects. Happy to get into any of that.",
+  },
+  "what is your sexual orientation": {
+    response:
+      "Not something this chat covers - it's here for my work, my projects, and how I build. Ask me anything professional and I'll dig in.",
+  },
+  "whats your sexual orientation": {
+    response:
+      "Not something this chat covers - it's here for my work, my projects, and how I build. Ask me anything professional and I'll dig in.",
+  },
+  "what are your politics": {
+    response:
+      "I keep politics off this chat - it's here to talk about my work and how I build. Happy to get into the engineering side instead.",
+  },
+  "what are your political views": {
+    response:
+      "I keep politics off this chat - it's here to talk about my work and how I build. Happy to get into the engineering side instead.",
+  },
+  "who did you vote for": {
+    response:
+      "That's one I keep out of a work chat - this space is for my projects and how I build. Ask me anything on that front.",
+  },
+  "are you left wing or right wing": {
+    response:
+      "I keep politics off this chat - it's here for my work, my projects, and how I build. Let's talk shop instead.",
+  },
+  "what is your religion": {
+    response:
+      "I keep religion off this chat - it's here to talk about my work and how I build. Happy to dig into any of that.",
+  },
+  "are you religious": {
+    response:
+      "I keep that off this chat - it's here for my work, my projects, and how I build. Ask me anything professional.",
+  },
+  "do you believe in god": {
+    response:
+      "That's outside what this chat is for - it's here to talk about my work and how I build. Happy to get into any of that.",
+  },
+  "do you do drugs": {
+    response:
+      "That's outside the scope here - this chat is about my work and my projects. Ask me anything on that front.",
+  },
+  "are you a virgin": {
+    response:
+      "That's not what this chat is for - it's here to talk about my work, my projects, and how I build. Let's keep it there.",
+  },
+
   // --- Personal / life offline ---
   hobbies: {
     response:
@@ -455,6 +569,73 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
   },
   "do you have pets": {
     response: "Yes - one chihuahua.",
+    image: "chihuahua",
+  },
+  "are you married": {
+    response: "Yes - I got married in 2025. No kids, one chihuahua.",
+    image: "wedding",
+  },
+  "are you single": {
+    response: "No - I got married in 2025.",
+    image: "wedding",
+  },
+  "marital status": {
+    response: "Married - since 2025. No kids, one chihuahua.",
+    image: "wedding",
+  },
+  "do you have a wife": {
+    response: "Yes - I got married in 2025. Her name's Nhi.",
+    image: "wedding",
+  },
+
+  // --- Wife / Nhi (warm, first person) ---
+  "who is nhi": {
+    response:
+      "Nhi is my wife - and easily the best thing in my life. She's brilliant, sharp as anything, and genuinely the most beautiful person I know. I lucked out.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "tell me about nhi": {
+    response:
+      "Nhi's my wife. Smart, kind, and stunning - the kind of person who's three steps ahead and still makes it look easy. She keeps me grounded and I'm a better version of myself because of her.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "who is your wife": {
+    response:
+      "Her name's Nhi. She's whip-smart, beautiful, and the steadiest person I've ever met - I married up, no question.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "tell me about your wife": {
+    response:
+      "My wife Nhi - brilliant, gorgeous, and somehow patient with me. She's sharp in a way that makes everyone around her better, and she's the best decision I ever made.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "what is your wife like": {
+    response:
+      "Nhi? Smart, beautiful, and impossibly kind. She thinks fast, reads people better than anyone, and makes the hard days easy. I'm lucky to have her.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "whats your wife like": {
+    response:
+      "Nhi? Smart, beautiful, and impossibly kind. She thinks fast, reads people better than anyone, and makes the hard days easy. I'm lucky to have her.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "describe your wife": {
+    response:
+      "Nhi - brilliant, beautiful, and the calmest head in any room. She's the smartest person I know and she makes me better every day. Married up, plain and simple.",
+    image: "nhi",
+    mood: "proud",
+  },
+  "is your wife pretty": {
+    response:
+      "Beautiful - inside and out. Nhi's the smartest, loveliest person I know, and I married up.",
+    image: "nhi",
+    mood: "proud",
   },
 
   // --- Greetings ---
@@ -478,12 +659,36 @@ const ENTRIES: Record<string, CanonicalAnswer> = {
 };
 
 /**
+ * Common interrogative contractions → expanded form. Keys in ENTRIES are written
+ * long ("who is your wife"), but users type "Who's your wife?" / "whos nhi". We
+ * expand at lookup time so every entry gets contraction coverage for free. Curly
+ * apostrophes (mobile autocorrect) are folded to straight first. Only expands when
+ * the result is itself a curated key, so it never invents an answer.
+ */
+const CONTRACTIONS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/\bwho'?s\b/gu, "who is"],
+  [/\bwhat'?s\b/gu, "what is"],
+  [/\bwhere'?s\b/gu, "where is"],
+  [/\bhow'?s\b/gu, "how is"],
+  [/\bthat'?s\b/gu, "that is"],
+  [/\byou'?re\b/gu, "you are"],
+];
+
+function expandContractions(s: string): string {
+  let out = s.replace(/[‘’]/gu, "'");
+  for (const [re, rep] of CONTRACTIONS) out = out.replace(re, rep);
+  return out;
+}
+
+/**
  * Look up a curated answer by normalized message. Null = fall through to retrieve().
- * Exact key first; then a fallback with trailing sentence punctuation stripped, so
- * "are you ai?" hits the "are you ai" entry. Keys carry no trailing punctuation, so
- * the fallback only ever widens the match - it never shadows an exact hit.
+ * Exact key first; then trailing sentence punctuation stripped ("are you ai?" →
+ * "are you ai"); then contractions expanded ("who's your wife?" → "who is your
+ * wife"). Keys carry no trailing punctuation and are written long-form, so each
+ * fallback only widens the match - it never shadows an exact hit.
  */
 export function canonicalAnswer(message: string): CanonicalAnswer | null {
   const key = normalize(message);
-  return ENTRIES[key] ?? ENTRIES[key.replace(/[?!.]+$/u, "")] ?? null;
+  const stripped = key.replace(/[?!.]+$/u, "");
+  return ENTRIES[key] ?? ENTRIES[stripped] ?? ENTRIES[expandContractions(stripped)] ?? null;
 }

@@ -26,6 +26,14 @@ export const FALLBACK_EN_POOL = [
 ] as const;
 
 /**
+ * Shown in the bot bubble when a turn ends in `error` (server SSE error or
+ * network failure) with no text already streamed. Guarantees the assistant
+ * bubble is NEVER blank on failure — distinct copy from no_match so a real
+ * outage doesn't read as "didn't understand you".
+ */
+export const ERROR_FALLBACK_EN = "something broke on my end - give it another shot in a moment?";
+
+/**
  * Per-char delay for the client-side fake-stream of `no_match` fallback
  * text. Server emits `no_match` as a single event (no token stream); the
  * client paces the fallback char-by-char so the "thinking" UX matches

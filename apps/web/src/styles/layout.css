@@ -1084,6 +1084,10 @@ body,
 @media (max-width: 768px) {
   .artifacts-shell {
     grid-template-columns: 1fr;
+    /* 100dvh overshoots the bordered .frame content box by the border width
+     * (~2px) and gets clipped by .frame's overflow:hidden. 100% fills the
+     * frame content box exactly (html/body/#root are height:100%). */
+    height: 100%;
   }
 }
 
@@ -1183,8 +1187,24 @@ body,
 }
 @media (max-width: 768px) {
   .artx-body {
-    grid-template-columns: 1fr;
+    display: block; /* stop the equal-row grid stretch that clipped columns */
+    overflow: visible;
   }
+  /* Separate the stacked columns now that the grid gap is gone. */
+  .artx-col--stack {
+    margin-top: 18px;
+  }
+}
+/* All-view columns. overflow:hidden is a horizontal guard for min-width:0
+ * truncation (ellipsis lives on .artx-proj-tags / .artx-card-tags, not here).
+ * The mobile @media block relaxes overflow-y so content isn't clipped. */
+.artx-col {
+  min-width: 0;
+  overflow: hidden;
+}
+.artx-col--stack {
+  display: flex;
+  flex-direction: column;
 }
 .artx-col-label {
   font-family: var(--font-mono);
@@ -1330,12 +1350,17 @@ body,
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
+}
+.artx-cv-link {
+  flex: 1;
+  min-width: 0;
+  display: block;
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
   transition: padding-left 130ms ease;
 }
-.artx-cv-row:hover {
+.artx-cv-link:hover {
   padding-left: 4px;
 }
 
@@ -1373,6 +1398,7 @@ body,
   background: var(--canvas);
   display: flex;
   flex-direction: column;
+  min-width: 0; /* grid item shrinks to its 1fr track; nowrap tags don't force overflow */
   cursor: pointer;
   transition:
     transform 130ms ease,
@@ -1458,6 +1484,7 @@ body,
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0; /* shrink within the flex foot so ellipsis engages instead of overflowing */
 }
 .artx-card-open {
   font-family: var(--font-mono);
@@ -1510,6 +1537,12 @@ body,
   .artx-cv-detail-grid {
     grid-template-columns: 1fr;
   }
+  /* Stack title over the action buttons so they don't fight for width
+   * (the long download-filename button overflowed the space-between row). */
+  .artx-cv-detail-head {
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 .artx-cv-exp {
   display: grid;
@@ -1522,4 +1555,51 @@ body,
   font-family: var(--font-mono);
   font-size: 9px;
   color: var(--ink-4);
+}
+
+/* ─── Artifacts page: mobile single-scroll-container model ───
+ * On mobile the whole artifacts column scrolls as one inside
+ * .artifacts-main (the only scroller; the .frame stays the clip boundary).
+ * Inner content flows at natural height so nothing is clipped/unreachable. */
+@media (max-width: 768px) {
+  .artifacts-main {
+    overflow-y: auto;
+    min-height: 0;
+  }
+  /* Stack the header instead of fighting for width: title block on top,
+   * filter tabs below (left-aligned, full width to wrap freely). */
+  .artx-head {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .artx-filters {
+    max-width: none;
+    justify-content: flex-start;
+  }
+  .artx {
+    flex: none; /* take content height, grow into the .artifacts-main scroll */
+    overflow: visible;
+    padding-bottom: 24px; /* breathing room under the last row */
+  }
+  .artx-single {
+    flex: none; /* explicit content-height; don't rely on flex:1 collapse in an unbounded column */
+    overflow: visible;
+    height: auto;
+  }
+  .artx-col {
+    /* keep horizontal truncation, never clip vertically on mobile */
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+  /* Pin the burger row so nav stays reachable while title/filters scroll past. */
+  .artifacts-main > .mobile-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: var(--canvas);
+  }
+  /* The inner-scroll fade hint mis-anchors under page scroll — drop it. */
+  .artx-fade {
+    display: none;
+  }
 }

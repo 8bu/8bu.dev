@@ -21,6 +21,8 @@ interface SeedPair {
   response: string;
   topic?: string;
   locale?: string;
+  image?: string;
+  mood?: string;
 }
 
 async function main(): Promise<void> {

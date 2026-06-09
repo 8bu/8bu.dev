@@ -31,6 +31,10 @@ export interface BotMessage {
     lowConfidence: boolean;
     locale: string | null;
     topic: string | null;
+    /** Content-image slug → /media/img/<slug>.webp. Optional: absent on legacy persisted messages. */
+    imageSlug?: string | null;
+    /** Reaction-GIF mood → /media/gif/<mood>/* pool. Optional: absent on legacy persisted messages. */
+    mood?: string | null;
   } | null;
   noMatch: boolean;
   /**

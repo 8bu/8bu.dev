@@ -76,7 +76,7 @@ export function ArtifactsGallery() {
 
       {filter === "All" && (
         <div className="artx-body">
-          <div style={{ minWidth: 0, overflow: "hidden" }}>
+          <div className="artx-col">
             <div className="artx-col-label">
               <span>Projects</span>
               <span className="n">{projectCount}</span>
@@ -85,14 +85,7 @@ export function ArtifactsGallery() {
               <ProjectRow key={p.slug} p={p} />
             ))}
           </div>
-          <div
-            style={{
-              minWidth: 0,
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          <div className="artx-col artx-col--stack">
             <div className="artx-col-label">
               <span>Writing</span>
               <span className="n">{essayCount}</span>

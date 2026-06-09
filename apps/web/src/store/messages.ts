@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { matchArtifact } from "@/features/artifacts/match";
 import {
   FAKE_STREAM_BASE_MS,
+  ERROR_FALLBACK_EN,
   FAKE_STREAM_JITTER_MS,
   FALLBACK_EN_POOL,
   PERSIST_DEBOUNCE_MS,
@@ -219,9 +220,14 @@ export const useMessagesStore = create<MessagesState>((set, get) => ({
       return {
         byThread: {
           ...s.byThread,
-          [threadId]: thread.map((m, i) =>
-            i === botIdx && m.kind === "bot" ? { ...m, status, artifactSlug: nextArtifactSlug } : m,
-          ),
+          [threadId]: thread.map((m, i) => {
+            if (i !== botIdx || m.kind !== "bot") return m;
+            // Never leave a bubble blank on failure: if the turn errored with no
+            // text streamed, fill a graceful fallback (e.g. server 500, network
+            // drop). Matched/settled bubbles keep their streamed text.
+            const text = status === "error" && m.text.trim() === "" ? ERROR_FALLBACK_EN : m.text;
+            return { ...m, status, text, artifactSlug: nextArtifactSlug };
+          }),
         },
       };
     });
@@ -302,6 +308,8 @@ async function applyEvent(
         lowConfidence: ev.lowConfidence,
         locale: ev.locale,
         topic: ev.topic,
+        imageSlug: ev.imageSlug,
+        mood: ev.mood,
       });
       break;
     case "no_match": {

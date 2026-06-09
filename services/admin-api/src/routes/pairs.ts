@@ -52,11 +52,16 @@ const IdSchema = v.pipe(v.string(), v.decimal(), v.transform(Number), v.integer(
 
 // Artifact deep-link slug, same shape as ingest's TopicSchema.
 const SeedTopicSchema = v.pipe(v.string(), v.maxLength(120), v.regex(/^[a-z0-9/-]+$/));
+// Reaction-GIF mood tag (lowercase word) → /media/gif/<mood>/* pool.
+const MoodSchema = v.pipe(v.string(), v.maxLength(40), v.regex(/^[a-z0-9-]+$/));
 const SeedItemSchema = v.object({
   input: v.pipe(v.string(), v.nonEmpty(), v.maxLength(2000)),
   response: v.pipe(v.string(), v.nonEmpty(), v.maxLength(2000)),
   topic: v.optional(SeedTopicSchema),
   locale: v.optional(v.pipe(v.string(), v.maxLength(16))),
+  // Content-image slug (→ /media/img/<slug>.webp); same slug shape as topic.
+  image: v.optional(SeedTopicSchema),
+  mood: v.optional(MoodSchema),
 });
 const SeedBodySchema = v.object({
   pairs: v.pipe(v.array(SeedItemSchema), v.minLength(1), v.maxLength(400)),
@@ -162,7 +167,13 @@ pairsRoute.post("/seed", async (c) => {
         tx,
       );
       await setPairVector(id, { embedding: embeddings[i]! }, tx);
-      await tx`UPDATE pairs SET audit_status = 'seed' WHERE id = ${id}`;
+      await tx`
+        UPDATE pairs
+           SET audit_status = 'seed',
+               image_slug   = ${p.image ?? null},
+               mood         = ${p.mood ?? null}
+         WHERE id = ${id}
+      `;
     }
     return del.count;
   });

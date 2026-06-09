@@ -34,6 +34,8 @@ describe("messages store", () => {
           lowConfidence: false,
           locale: "en",
           topic: null,
+          imageSlug: null,
+          mood: null,
         },
         { type: "token", content: "po" },
         { type: "token", content: "ng" },
@@ -64,6 +66,31 @@ describe("messages store", () => {
     expect(bot?.noMatch).toBe(true);
     // Text must match one of the pool entries verbatim.
     expect(FALLBACK_EN_POOL).toContain(bot?.text);
+  });
+
+  it("fills the bubble with a fallback when the server emits error (no blank bubble)", async () => {
+    streamMock.mockReturnValue(
+      genFrom([{ type: "error", message: "internal error" }, { type: "done" }]),
+    );
+    const { useMessagesStore } = await import("@/store/messages");
+    const { ERROR_FALLBACK_EN } = await import("@/features/chat/tokens");
+    await useMessagesStore.getState().send("tErr", "eduication");
+    const bot = useMessagesStore.getState().byThread["tErr"]!.find((m) => m.kind === "bot");
+    expect(bot?.status).toBe("error");
+    expect(bot?.text).toBe(ERROR_FALLBACK_EN);
+    expect(bot?.text).not.toBe("");
+  });
+
+  it("fills the bubble with a fallback when the stream throws (network drop)", async () => {
+    streamMock.mockImplementation(() => {
+      throw new Error("Couldn't reach the server");
+    });
+    const { useMessagesStore } = await import("@/store/messages");
+    const { ERROR_FALLBACK_EN } = await import("@/features/chat/tokens");
+    await useMessagesStore.getState().send("tNet", "anything");
+    const bot = useMessagesStore.getState().byThread["tNet"]!.find((m) => m.kind === "bot");
+    expect(bot?.status).toBe("error");
+    expect(bot?.text).toBe(ERROR_FALLBACK_EN);
   });
 
   it("clear removes the thread slice", async () => {
@@ -275,6 +302,44 @@ describe("finishBot artifact hook", () => {
     const bot = useMessagesStore.getState().byThread.t1?.find((m) => m.id === "b1");
     if (bot?.kind === "bot") {
       expect(bot.artifactSlug).toBeNull();
+    }
+  });
+
+  it("stores imageSlug + mood from the metadata event", async () => {
+    const { useMessagesStore } = await import("@/store/messages");
+    const threadId = "tm";
+    useMessagesStore.setState({
+      byThread: {
+        [threadId]: [
+          { kind: "user", id: "u1", text: "q", createdAt: 1 },
+          {
+            kind: "bot",
+            id: "b1",
+            text: "",
+            status: "streaming",
+            meta: null,
+            noMatch: false,
+            artifactSlug: null,
+            createdAt: 2,
+          },
+        ],
+      },
+    });
+
+    useMessagesStore.getState().applyMetadata(threadId, "b1", {
+      tier: "2",
+      confidence: 0.9,
+      lowConfidence: false,
+      locale: "en",
+      topic: null,
+      imageSlug: "hcmc-skyline",
+      mood: "proud",
+    });
+
+    const bot = useMessagesStore.getState().byThread[threadId]?.find((m) => m.id === "b1");
+    if (bot?.kind === "bot") {
+      expect(bot.meta?.imageSlug).toBe("hcmc-skyline");
+      expect(bot.meta?.mood).toBe("proud");
     }
   });
 });

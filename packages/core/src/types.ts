@@ -23,6 +23,8 @@ export type ChatStreamEvent =
       lowConfidence: boolean;
       locale: string | null;
       topic: string | null;
+      imageSlug: string | null;
+      mood: string | null;
     }
   | { type: "no_match" }
   | { type: "token"; content: string }

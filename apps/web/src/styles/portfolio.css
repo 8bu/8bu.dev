@@ -1086,27 +1086,20 @@ body { font-family: var(--font-body); }
   align-items: center;
   line-height: 1;
 }
-.wm-mark-blockcursor-badge {
-  display: inline-flex;
-  align-items: baseline;
-  background: var(--coral);
-  color: #ffffff;
-  font-family: var(--fr-pixel);
-  font-weight: 400;
-  padding: 4px 3px 3px 5px;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  border-radius: var(--radius-sm);
-}
-.wm-blink-caret {
+.wm-badge-svg {
   display: inline-block;
-  margin-left: 0;
-  margin-right: -0.04em; /* absorb trailing letter-spacing on the badge */
+  vertical-align: baseline;
+}
+/* caret is an SVG <path>; blink toggles opacity (hard on/off). */
+.wm-blink-caret {
   animation: wm-caret-blink 1s steps(2, end) infinite;
 }
 @keyframes wm-caret-blink {
   0%, 50%      { opacity: 1; }
   50.01%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wm-blink-caret { animation: none; opacity: 1; }
 }
 .wm-mark-blockcursor-caret,
 .wm-mark-blockcursor-text { display: none; }
@@ -1184,6 +1177,25 @@ body { font-family: var(--font-body); }
   color: var(--ink-2);
   border: 1px dashed var(--line-strong);
   border-bottom-left-radius: var(--radius-sm);
+}
+/* Chat media (MediaBlock): content image + reaction GIF below bubble text.
+   Reserved aspect-ratio box so media load causes no layout shift (AC6). */
+.media-block {
+  max-width: 480px;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.media-image,
+.media-gif {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-sm);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--line-soft, rgba(0, 0, 0, 0.04));
 }
 .bubble-essay {
   max-width: 100%;

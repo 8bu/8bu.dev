@@ -95,6 +95,27 @@ describe("POST /pairs/seed", () => {
     expect(n[0]!.n).toBe(0);
   });
 
+  it("persists image_slug + mood on seeded pairs", async () => {
+    const res = await postJson(app, "/pairs/seed", {
+      pairs: [
+        { input: "where based", response: "HCMC", image: "hcmc-skyline", mood: "proud" },
+        { input: "plain pair", response: "no media" },
+      ],
+    });
+    expect(res.status).toBe(201);
+    const rows = await sql()<{ input: string; image_slug: string | null; mood: string | null }[]>`
+      SELECT input, image_slug, mood FROM pairs WHERE source = 'seed' AND deleted_at IS NULL ORDER BY id ASC
+    `;
+    expect(rows.find((r) => r.input === "where based")).toMatchObject({
+      image_slug: "hcmc-skyline",
+      mood: "proud",
+    });
+    expect(rows.find((r) => r.input === "plain pair")).toMatchObject({
+      image_slug: null,
+      mood: null,
+    });
+  });
+
   it("AC4: embed failure leaves the store untouched (no soft-delete, no insert)", async () => {
     await sql()`INSERT INTO pairs (input, normalized_input, response, source, audit_status, embedding)
                 VALUES ('seeded', 'seeded', 'a', 'seed', 'seed', ${`[${unitVec(0).join(",")}]`}::vector)`;

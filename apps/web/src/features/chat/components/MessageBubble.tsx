@@ -4,6 +4,7 @@ import { ArtifactPreviewCard } from "@/features/artifacts/components/ArtifactPre
 import type { ArtifactDescriptor } from "@/features/artifacts/types";
 import type { ChatMessage } from "@/features/chat/types";
 import { MarkdownBubble } from "@/features/chat/components/MarkdownBubble";
+import { MediaBlock } from "@/features/chat/components/MediaBlock";
 import { TypingIndicator } from "@/features/chat/components/TypingIndicator";
 
 /**
@@ -45,6 +46,14 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           <MarkdownBubble text={message.text} />
         ) : message.status === "streaming" ? (
           <TypingIndicator />
+        ) : null}
+        {!message.noMatch && message.status === "settled" ? (
+          <MediaBlock
+            imageSlug={message.meta?.imageSlug}
+            mood={message.meta?.mood}
+            topic={message.meta?.topic}
+            seedKey={message.id}
+          />
         ) : null}
         {artifact ? (
           <ArtifactPreviewCard

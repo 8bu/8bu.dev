@@ -4,6 +4,7 @@ import { createCosimi } from "@cosimi/sdk";
 import type { PairHit, ChunkHit } from "@cosimi/sdk";
 
 import { canonicalAnswer } from "../canonical";
+import { deflectInput } from "../deflect";
 import { resolveEmbedder } from "../lib/embedder";
 import type { Emitter } from "../lib/sse";
 import { tokenize, jitterMs, sleep } from "../lib/tokenizer";
@@ -48,6 +49,29 @@ export async function runChat(args: RunChatArgs): Promise<void> {
   const env = loadEnv();
   await args.emit({ type: "session", session_id: args.sessionId });
 
+  // Tier-0 lexical guard: slurs / profanity / insults are screened BEFORE the
+  // embedding pipeline. Vector search has no notion of "don't answer this" — a
+  // hostile token would otherwise embed near some personal pair and hijack its
+  // answer. Whole-token match, so clean words never trip it.
+  const deflection = deflectInput(args.message);
+  if (deflection) {
+    const exposeD = env.EXPOSE_MATCH_INSIGHTS;
+    await args.emit({
+      type: "metadata",
+      tier: exposeD ? "exact" : null,
+      confidence: exposeD ? 1 : null,
+      pairId: null,
+      score: exposeD ? 1 : null,
+      lowConfidence: false,
+      locale: exposeD ? (args.locale ?? null) : null,
+      topic: null,
+      imageSlug: null,
+      mood: null,
+    });
+    await streamTokens(deflection.response, args.emit, env);
+    return;
+  }
+
   // Canonical override: chip labels + common questions get deterministic, on-topic
   // answers BEFORE the GraphRAG retriever (whose ranking over short personal facts
   // is noisy). The long tail falls through to retrieve().
@@ -63,6 +87,9 @@ export async function runChat(args: RunChatArgs): Promise<void> {
       lowConfidence: false,
       locale: exposeC ? (args.locale ?? null) : null,
       topic: exposeC ? (canon.topic ?? null) : null,
+      // Media is user-facing content, not a match-internals tell — never gated.
+      imageSlug: canon.image ?? null,
+      mood: canon.mood ?? null,
     });
     await streamTokens(canon.response, args.emit, env);
     return;
@@ -87,6 +114,8 @@ export async function runChat(args: RunChatArgs): Promise<void> {
       lowConfidence: seed.similarity < LOW_CONFIDENCE_BELOW,
       locale: exposeS ? (args.locale ?? null) : null,
       topic: exposeS ? (seed.topic ?? null) : null,
+      imageSlug: seed.image_slug,
+      mood: seed.mood,
     });
     await streamTokens(seed.response, args.emit, env);
     return;
@@ -122,6 +151,9 @@ export async function runChat(args: RunChatArgs): Promise<void> {
     lowConfidence: answerable.similarity < LOW_CONFIDENCE_BELOW,
     locale: expose ? (args.locale ?? null) : null,
     topic: expose ? topic : null,
+    // Long tail has no per-pair media; FE may still map a content image by topic.
+    imageSlug: null,
+    mood: null,
   });
   await streamTokens(answerOf(answerable), args.emit, env);
 }
@@ -130,6 +162,8 @@ interface SeedHit {
   response: string;
   topic: string | null;
   similarity: number;
+  image_slug: string | null;
+  mood: string | null;
 }
 
 /**
@@ -142,7 +176,8 @@ async function seedAnswer(message: string): Promise<SeedHit | undefined> {
   if (!embedding) return undefined;
   const lit = `[${embedding.join(",")}]`;
   const [row] = await sql()<SeedHit[]>`
-    SELECT response, topic, 1 - (embedding <=> ${lit}::vector) AS similarity
+    SELECT response, topic, image_slug, mood,
+           1 - (embedding <=> ${lit}::vector) AS similarity
       FROM pairs
      WHERE source = 'seed' AND deleted_at IS NULL AND embedding IS NOT NULL
      ORDER BY embedding <=> ${lit}::vector ASC

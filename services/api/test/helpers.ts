@@ -63,10 +63,12 @@ export async function seedSeedPair(
   response: string,
   vec: number[],
   topic: string | null = null,
+  image: string | null = null,
+  mood: string | null = null,
 ): Promise<number> {
   const [row] = await sql()<{ id: number }[]>`
-    INSERT INTO pairs (input, normalized_input, response, source, audit_status, topic, locale, embedding)
-    VALUES (${input}, ${input}, ${response}, 'seed', 'seed', ${topic}, 'en', ${vlit(vec)}::vector)
+    INSERT INTO pairs (input, normalized_input, response, source, audit_status, topic, locale, embedding, image_slug, mood)
+    VALUES (${input}, ${input}, ${response}, 'seed', 'seed', ${topic}, 'en', ${vlit(vec)}::vector, ${image}, ${mood})
     RETURNING id::int AS id
   `;
   return row!.id;

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MessageBubble } from "@/features/chat/components/MessageBubble";
+import { MEDIA_CATALOG } from "@/features/chat/media/catalog";
 import type { ChatMessage } from "@/features/chat/types";
 
 vi.mock("@tanstack/react-router", () => ({
@@ -66,6 +67,59 @@ describe("MessageBubble", () => {
   it("adds is-error modifier when bot status is error", () => {
     const { container } = render(<MessageBubble message={botError} />);
     expect(container.querySelector(".bubble.is-error")).not.toBeNull();
+  });
+});
+
+describe("MessageBubble media", () => {
+  // The live catalog is empty in Deliverable A; seed one slug so the mount is
+  // observable, then restore so other suites stay unaffected.
+  let restore: () => void;
+  beforeEach(() => {
+    MEDIA_CATALOG.imageBySlug.hero = "/media/img/hero.webp";
+    restore = () => {
+      delete MEDIA_CATALOG.imageBySlug.hero;
+    };
+  });
+  afterEach(() => {
+    restore();
+    cleanup();
+  });
+
+  const mediaBot = (noMatch: boolean): ChatMessage => ({
+    kind: "bot",
+    id: "bm",
+    text: "answer",
+    status: "settled",
+    noMatch,
+    artifactSlug: null,
+    createdAt: 1,
+    meta: {
+      tier: "2",
+      confidence: 1,
+      lowConfidence: false,
+      locale: "en",
+      topic: null,
+      imageSlug: "hero",
+      mood: null,
+    },
+  });
+
+  it("renders MediaBlock for a bot message whose imageSlug resolves", () => {
+    const { container } = render(<MessageBubble message={mediaBot(false)} />);
+    expect(container.querySelector(".media-block img")?.getAttribute("src")).toBe(
+      "/media/img/hero.webp",
+    );
+  });
+
+  it("suppresses MediaBlock on a no_match deflection even with a stale meta", () => {
+    const { container } = render(<MessageBubble message={mediaBot(true)} />);
+    expect(container.querySelector(".media-block")).toBeNull();
+  });
+
+  it("does not render media while still streaming (only after settle)", () => {
+    const streaming = { ...mediaBot(false), text: "answ", status: "streaming" as const };
+    const { container } = render(<MessageBubble message={streaming} />);
+    expect(container.querySelector(".media-block")).toBeNull();
   });
 });
 

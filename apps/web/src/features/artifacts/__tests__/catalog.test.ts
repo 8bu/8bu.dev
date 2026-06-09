@@ -258,6 +258,28 @@ describe("optional repo field", () => {
   });
 });
 
+describe("production catalog · new portfolio artifacts", () => {
+  // Exercises the REAL catalog (getCatalog -> import.meta.glob over .mdx).
+  // vitest.config.ts registers the mdx() plugin, so the eager glob compiles
+  // the actual artifact files. beforeEach's vi.resetModules() above yields a
+  // clean singleton (no _setCatalogForTesting pollution from earlier tests).
+  it("includes the NTWRX project with its url", async () => {
+    const { getCatalog } = await import("@/features/artifacts/catalog");
+    const ntwrx = getCatalog().find((d) => d.slug === "ntwrx");
+    expect(ntwrx).toBeDefined();
+    expect(ntwrx?.kind).toBe("projects");
+    expect(ntwrx?.url).toBe("https://ntwrx.com");
+  });
+
+  it("includes the Figma resume template project with its community url", async () => {
+    const { getCatalog } = await import("@/features/artifacts/catalog");
+    const figma = getCatalog().find((d) => d.slug === "figma-resume-template");
+    expect(figma).toBeDefined();
+    expect(figma?.kind).toBe("projects");
+    expect(figma?.url).toContain("figma.com/community/file/1638477297932371199");
+  });
+});
+
 describe("FrontmatterSchema.repo", () => {
   it("accepts optional repo URL", async () => {
     const v = await import("valibot");

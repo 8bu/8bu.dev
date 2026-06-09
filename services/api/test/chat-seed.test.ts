@@ -69,4 +69,31 @@ describe("runChat seed step", () => {
     const events = await collect("far"); // unitVec(99), orthogonal → similarity 0
     expect(events.some((e) => e.type === "no_match")).toBe(true);
   });
+
+  it("emits the seed pair's image_slug + mood on the metadata event", async () => {
+    await seedSeedPair(
+      "which city are you based in",
+      "Ho Chi Minh City, GMT+7.",
+      unitVec(5),
+      "portfolio/artifact/longnguyen-2026",
+      "hcmc-skyline",
+      "proud",
+    );
+    const events = await collect("which city are you based in");
+    const meta = events.find((e) => e.type === "metadata") as
+      | { imageSlug: string | null; mood: string | null }
+      | undefined;
+    expect(meta?.imageSlug).toBe("hcmc-skyline");
+    expect(meta?.mood).toBe("proud");
+  });
+
+  it("emits null media when the seed pair has none", async () => {
+    await seedSeedPair("where do you live", "HCMC.", unitVec(5));
+    const events = await collect("where do you live");
+    const meta = events.find((e) => e.type === "metadata") as
+      | { imageSlug: string | null; mood: string | null }
+      | undefined;
+    expect(meta?.imageSlug).toBeNull();
+    expect(meta?.mood).toBeNull();
+  });
 });
