@@ -3,8 +3,12 @@ import type { ChatStreamEvent } from "@8budev/core";
 
 // Deterministic embedder: message text → unit vector by a lookup table so we
 // control which seed pair is nearest. Default → unitVec(0).
-// Use a phrase NOT in canonical.ts so the seed step (not canonical) handles it.
-const VEC_BY_TEXT: Record<string, number> = { "which city are you based in": 5, far: 99 };
+// A phrase handled by the seed step (deflect → seed → retrieve cascade).
+const VEC_BY_TEXT: Record<string, number> = {
+  "which city are you based in": 5,
+  "where do you live": 5,
+  far: 99,
+};
 vi.mock("../src/lib/embedder", async () => {
   const { unitVec } = await import("./helpers");
   return {

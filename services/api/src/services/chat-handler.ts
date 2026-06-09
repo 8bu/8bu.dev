@@ -3,7 +3,6 @@ import { sql } from "@cosimi/adapter-postgres";
 import { createCosimi } from "@cosimi/sdk";
 import type { PairHit, ChunkHit } from "@cosimi/sdk";
 
-import { canonicalAnswer } from "../canonical";
 import { deflectInput } from "../deflect";
 import { resolveEmbedder } from "../lib/embedder";
 import type { Emitter } from "../lib/sse";
@@ -23,9 +22,10 @@ const LOW_CONFIDENCE_BELOW = 0.55;
 
 // Below this similarity, even an "answerable" hit is too weak to trust — route to
 // the no_match deflection path (logs unanswered + FE streams a deflection) instead
-// of surfacing a wrong nearest pair. The high-value interview openers + deflections
-// answer via canonical (above), so they never reach this gate; it governs only the
-// genuinely-unknown long tail. Tuned against post-interview-ingest similarities.
+// of surfacing a wrong nearest pair. The high-value interview openers + chip
+// questions answer via seed pairs (above this gate), so they rarely reach it; it
+// governs the genuinely-unknown long tail. Tuned against post-interview-ingest
+// similarities.
 const DEFLECT_BELOW = 0.55;
 
 // Seed pairs (document-less, source='seed') are retrieved by their own embedding
@@ -49,10 +49,12 @@ export async function runChat(args: RunChatArgs): Promise<void> {
   const env = loadEnv();
   await args.emit({ type: "session", session_id: args.sessionId });
 
-  // Tier-0 lexical guard: slurs / profanity / insults are screened BEFORE the
-  // embedding pipeline. Vector search has no notion of "don't answer this" — a
-  // hostile token would otherwise embed near some personal pair and hijack its
-  // answer. Whole-token match, so clean words never trip it.
+  // Tier-0 deterministic guard: slurs / insults / sensitive-topic questions
+  // (sexuality, religion, politics, substances, crude) are screened BEFORE the
+  // embedding pipeline. Vector search has no notion of "don't answer this" — such
+  // input would otherwise embed near some personal pair and hijack its answer.
+  // Sensitive topics live ONLY here, never as seed pairs, so they can't fall
+  // through the SEED_MIN threshold and leak a personal fact.
   const deflection = deflectInput(args.message);
   if (deflection) {
     const exposeD = env.EXPOSE_MATCH_INSIGHTS;
@@ -69,29 +71,6 @@ export async function runChat(args: RunChatArgs): Promise<void> {
       mood: null,
     });
     await streamTokens(deflection.response, args.emit, env);
-    return;
-  }
-
-  // Canonical override: chip labels + common questions get deterministic, on-topic
-  // answers BEFORE the GraphRAG retriever (whose ranking over short personal facts
-  // is noisy). The long tail falls through to retrieve().
-  const canon = canonicalAnswer(args.message);
-  if (canon) {
-    const exposeC = env.EXPOSE_MATCH_INSIGHTS;
-    await args.emit({
-      type: "metadata",
-      tier: exposeC ? "exact" : null,
-      confidence: exposeC ? 1 : null,
-      pairId: null,
-      score: exposeC ? 1 : null,
-      lowConfidence: false,
-      locale: exposeC ? (args.locale ?? null) : null,
-      topic: exposeC ? (canon.topic ?? null) : null,
-      // Media is user-facing content, not a match-internals tell — never gated.
-      imageSlug: canon.image ?? null,
-      mood: canon.mood ?? null,
-    });
-    await streamTokens(canon.response, args.emit, env);
     return;
   }
 

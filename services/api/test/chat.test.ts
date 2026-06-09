@@ -50,7 +50,7 @@ describe("runChat (GraphRAG)", () => {
       unitVec(0),
     );
 
-    // A non-canonical query so it exercises the retrieve() path (not the override).
+    // A query with no seed pair so it exercises the retrieve() path.
     const ev = await collect("the b2b travel platform you built");
     expect(ev[0]).toEqual({ type: "session", session_id: expect.any(String) });
 
@@ -82,23 +82,6 @@ describe("runChat (GraphRAG)", () => {
       { type: "metadata" }
     >;
     expect(meta.topic).toBeNull();
-  });
-
-  it("canonical override: chip question answers deterministically (tier exact) before retrieve", async () => {
-    // No corpus seeded — proves the canonical map answers without touching retrieve().
-    const ev = await collect("What is WegoPro");
-    const meta = ev.find((e) => e.type === "metadata") as Extract<
-      ChatStreamEvent,
-      { type: "metadata" }
-    >;
-    expect(meta.tier).toBe("exact");
-    expect(meta.topic).toBe("portfolio/artifact/wegopro");
-    const text = ev
-      .filter((e): e is Extract<ChatStreamEvent, { type: "token" }> => e.type === "token")
-      .map((e) => e.content)
-      .join("");
-    expect(text.toLowerCase()).toContain("wegopro");
-    expect(ev.some((e) => e.type === "no_match")).toBe(false);
   });
 
   it("miss: empty corpus → session → no_match + unanswered upsert (source chat)", async () => {

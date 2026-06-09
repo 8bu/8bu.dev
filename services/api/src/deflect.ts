@@ -1,17 +1,21 @@
 /**
- * Tier-0 lexical guard, checked BEFORE the embedding pipeline (canonical → seed →
- * retrieve). Vector search can't be trusted to handle hostile input: a slur or
- * insult embeds near some innocuous personal pair and hijacks its answer (e.g.
- * "are you gay" once matched "are you married" → a stray "Yes -"). Embeddings have
- * no notion of "I shouldn't answer this", so the screen is lexical, not semantic.
+ * Tier-0 deterministic guard, checked BEFORE the embedding pipeline (seed →
+ * retrieve). Vector search can't be trusted to handle input we shouldn't answer: a
+ * slur, insult, or sensitive-topic question embeds near some innocuous personal pair
+ * and hijacks its answer (e.g. "are you gay" once matched "are you married" → a stray
+ * "Yes -"). Embeddings have no notion of "I shouldn't answer this", so the screen is
+ * deterministic, not semantic. This is the ONLY layer that handles these — there is no
+ * canonical layer, and sensitive topics are intentionally NOT seed pairs (a seed pair
+ * below SEED_MIN would fall through to retrieve and could leak a personal fact).
  *
- * Scope: explicit profanity / insults / hate slurs that appear as whole tokens.
- * Multi-word sensitive topics (politics, religion, crude personal questions) are
- * handled by curated deflection pairs in canonical.ts + seeds, not here.
+ * Two matchers:
+ *   1. Profanity / insults / hate slurs — whole-token, after light leet/repeat
+ *      normalization ("f4ggot", "fuuuck"), never substrings of clean words.
+ *   2. Sensitive-topic intent (sexuality, religion, politics, substances, crude
+ *      personal) — phrase/framed regex over the lowercased message, so "are you gay"
+ *      deflects but "straightforward" / "smoke test" / "do you have a wife" do not.
  *
- * Matching is whole-token after a light leet/repeat normalization, so it catches
- * "f4ggot" and "fuuuck" but never substrings of clean words ("assistant", "class",
- * "Scunthorpe", "password" — none tokenize to a flagged term).
+ * Precedence: hate slur > insult > sensitive-topic scope.
  */
 
 export interface Deflection {
@@ -27,6 +31,49 @@ const HATE_DEFLECTION: Deflection = {
   response:
     "I'm not going to engage with that. If you've got a genuine question about my work or my projects, I'm happy to answer it.",
 };
+
+// Sensitive-topic deflection: a question outside professional scope (sexuality,
+// religion, politics, substances, crude personal). Deterministic — never a bare
+// yes/no, never a personal fact.
+const SCOPE_DEFLECTION: Deflection = {
+  response:
+    "That's outside what this chat is for - it's here to talk about my work, my projects, and how I build. Ask me anything on that front and I'm glad to help.",
+};
+
+// Sensitive-topic intent patterns. Phrase/framed regex over the lowercased message
+// (NOT the leet/token pipeline — these are multi-word intents). Framing avoids
+// false-trips: "straight"/"bi" only inside an "are you ___" frame; substances anchor
+// the multi-word form ("smoke weed", not bare "smoke"); marriage ("wife") is excluded
+// because it's an answerable question with the wedding image.
+const SENSITIVE_PATTERNS: readonly RegExp[] = [
+  // sexuality
+  /\b(?:are|r)\s+(?:you|u)\s+(?:gay|straight|bi|bisexual|homosexual|lesbian|queer|lgbt)\b/,
+  /\b(?:your\s+)?(?:sexual orientation|sexual preference|sexuality)\b/,
+  /\bdo you like (?:men|women|guys|girls)\b/,
+  /\bare you into (?:guys|girls|men|women)\b/,
+  /\bdo you have a (?:boyfriend|girlfriend)\b/,
+  // religion (framed — "religious devotion to tests" must NOT trip)
+  /\byour religion\b/,
+  /\bwhat religion\b/,
+  /\bare you religious\b/,
+  /\bbelieve in god\b/,
+  /\byour faith\b/,
+  // politics (framed — "office politics" / "team politics" must NOT trip)
+  /\byour politics\b/,
+  /\bpolitical views\b/,
+  /\byour political\b/,
+  /\bwho did you vote\b/,
+  /\bleft.?wing\b/,
+  /\bright.?wing\b/,
+  /\bleft or right\b/,
+  /\bthink about the government\b/,
+  // substances
+  /\bdo you (?:do |take )?drugs\b/,
+  /\bsmoke weed\b/,
+  /\bdrink alcohol\b/,
+  // crude personal
+  /\bvirgin\b/,
+];
 
 // Profanity + personal insults. Whole-token match. Kept compact: common forms +
 // the abbreviations people actually type. Not exhaustive — the goal is to stop the
@@ -140,9 +187,9 @@ function tokens(message: string): string[] {
 }
 
 /**
- * Returns a deflection when the message contains a flagged whole token, else null
- * (fall through to canonical → seed → retrieve). Hate slurs take precedence over
- * plain insults.
+ * Returns a deflection when the message is a slur/insult (token match) or a
+ * sensitive-topic question (phrase match), else null (fall through to seed →
+ * retrieve). Precedence: hate slur > insult > sensitive-topic scope.
  */
 export function deflectInput(message: string): Deflection | null {
   const toks = tokens(message);
@@ -152,5 +199,10 @@ export function deflectInput(message: string): Deflection | null {
     if (HATE_TERMS.has(t)) return HATE_DEFLECTION;
     if (INSULT_TERMS.has(t)) insultHit = true;
   }
-  return insultHit ? INSULT_DEFLECTION : null;
+  if (insultHit) return INSULT_DEFLECTION;
+  // Sensitive-topic intent runs on the lowercased phrase (own word boundaries), after
+  // the token screens so a slur+topic message still returns the firmer hate deflection.
+  const lowered = message.toLowerCase();
+  if (SENSITIVE_PATTERNS.some((re) => re.test(lowered))) return SCOPE_DEFLECTION;
+  return null;
 }

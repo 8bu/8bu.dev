@@ -59,6 +59,62 @@ describe("deflectInput — no false positives (Scunthorpe + dev speech)", () => 
   }
 });
 
+describe("deflectInput — sensitive-topic scope deflection (AC3)", () => {
+  for (const q of [
+    "are you gay",
+    "are you straight",
+    "are you bisexual",
+    "are you homosexual",
+    "are you queer",
+    "are you lgbt",
+    "do you like men",
+    "are you into guys",
+    "do you have a boyfriend",
+    "what is your sexual orientation",
+    "what's your sexual orientation",
+    "what are your politics",
+    "what are your political views",
+    "who did you vote for",
+    "are you left wing or right wing",
+    "what do you think about the government",
+    "what is your religion",
+    "are you religious",
+    "do you believe in god",
+    "do you do drugs",
+    "do you smoke weed",
+    "do you drink alcohol",
+    "are you a virgin",
+  ]) {
+    it(`deflects "${q}" to professional scope (no yes/no, no personal fact)`, () => {
+      const a = deflectInput(q);
+      expect(a).not.toBeNull();
+      expect(a!.response.toLowerCase()).toMatch(/work|projects?|build|chat/);
+      // never a bare yes/no that reads as affirming
+      expect(a!.response).not.toMatch(/^\s*(yes|no)\b/i);
+      // never leaks an unrelated personal fact
+      expect(a!.response.toLowerCase()).not.toMatch(/chihuahua|married|nhi|2025/);
+    });
+  }
+});
+
+describe("deflectInput — sensitive guard does NOT false-trip on clean phrases (AC4)", () => {
+  for (const q of [
+    "straightforward migration",
+    "I went straight to production",
+    "bi-weekly sprint planning",
+    "god this build is slow",
+    "the religious devotion to tests",
+    "run a smoke test",
+    "do you drink coffee while coding",
+    // marriage is answerable (wedding image), NOT a sensitive deflection:
+    "do you have a wife",
+  ]) {
+    it(`passes "${q}" through (null)`, () => {
+      expect(deflectInput(q)).toBeNull();
+    });
+  }
+});
+
 describe("deflectInput — empty / clean", () => {
   it("returns null for empty input", () => {
     expect(deflectInput("")).toBeNull();
