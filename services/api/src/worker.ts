@@ -3,6 +3,7 @@ import { runWithRequestDb } from "@cosimi/adapter-postgres";
 import { app } from "./app";
 import { runWithAi } from "./lib/embedder";
 import type { AiBinding } from "@cosimi/adapter-embed-workers-ai";
+import { runWithRateLimit, type RateLimitBinding } from "./lib/rate-limit";
 import { stripApiPrefix } from "./lib/worker-url";
 
 /**
@@ -18,6 +19,7 @@ interface ExecutionContext {
 interface WorkerEnv {
   HYPERDRIVE?: { connectionString: string };
   AI?: AiBinding;
+  CHAT_LIMIT?: RateLimitBinding;
   [key: string]: unknown;
 }
 
@@ -52,7 +54,11 @@ export default {
     // Both scopes ride along to Hono's deferred SSE generator via AsyncLocalStorage.
     return runWithRequestDb(async () => {
       const run = () => app.fetch(stripApiPrefix(req));
-      return env.AI ? runWithAi(env.AI, run) : run();
+      // Carry the CF Rate-Limiting binding request-scoped, like runWithAi. When
+      // absent (binding not yet provisioned), skip the scope — rateLimit then
+      // falls to the in-memory limiter (ALS store unset) instead of throwing.
+      const withRl = env.CHAT_LIMIT ? () => runWithRateLimit(env.CHAT_LIMIT!, run) : run;
+      return env.AI ? runWithAi(env.AI, withRl) : withRl();
     });
   },
 };

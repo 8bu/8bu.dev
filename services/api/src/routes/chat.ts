@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import * as v from "valibot";
 
+import { rateLimit } from "../lib/rate-limit";
 import { withSession } from "../lib/session";
 import { streamChat } from "../lib/sse";
 import { runChat } from "../services/chat-handler";
@@ -22,7 +23,7 @@ const ChatBodySchema = v.object({
 
 export const chatRoute = new Hono();
 
-chatRoute.post("/", withSession, (c) => {
+chatRoute.post("/", withSession, rateLimit, (c) => {
   const body = c.get("parsedBody");
   const parsed = v.safeParse(ChatBodySchema, body);
   if (!parsed.success) return c.json({ error: "invalid body" }, 400);

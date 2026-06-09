@@ -5,6 +5,14 @@ import { usePreferencesStore } from "@/store/preferences";
 import { useSessionsStore } from "@/store/sessions";
 
 /**
+ * Client-side superset of the wire union. `rate_limited` never travels the SSE
+ * wire (it's synthesized FE-side on a 429), so it must NOT be added to the
+ * shared ChatStreamEvent in @8budev/core (spec §6.1). applyEvent in the
+ * messages store widens its param to this type and branches on the new member.
+ */
+export type ClientChatEvent = ChatStreamEvent | { type: "rate_limited" };
+
+/**
  * Open a streaming /chat request scoped to `threadId`.
  *
  * Server-canonical session id (CLAUDE.md): if `sessions.get(threadId)` is
@@ -27,7 +35,7 @@ export async function* streamChatPortf(
   threadId: string,
   text: string,
   signal: AbortSignal,
-): AsyncGenerator<ChatStreamEvent> {
+): AsyncGenerator<ClientChatEvent> {
   const primary = usePreferencesStore.getState().primaryLocale;
   const cachedSession = useSessionsStore.getState().get(threadId);
 
@@ -46,6 +54,14 @@ export async function* streamChatPortf(
     body: JSON.stringify(body),
     signal,
   });
+
+  if (res.status === 429) {
+    // Throttled. Surface a typed client-only signal and stop — the body is a
+    // plain JSON {error:"rate_limited"}, NOT an SSE stream, so do not parse it.
+    // Note: we intentionally do NOT adopt X-Session-Id here (no answer to bind).
+    yield { type: "rate_limited" };
+    return;
+  }
 
   if (!res.ok || !res.body) {
     throw new Error(`chat stream failed: ${res.status} ${res.statusText}`);

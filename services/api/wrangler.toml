@@ -15,6 +15,19 @@ id = "7994710a22e94e3fab65ac8deaa79a59"
 [env.portf.ai]
 binding = "AI"
 
+# Rate-limiting binding (GA `[[ratelimits]]`, requires wrangler >=4.36 — this
+# workspace pins wrangler 4). POST /chat is gated at 20 req / 60s per client.
+# Carried request-scoped via runWithRateLimit (the binding is a non-string object
+# — it reaches neither c.env nor process.env). `period` accepts only 10 or 60;
+# `limit` MUST stay equal to RATE_LIMIT in src/lib/rate-limit.ts. `namespace_id`
+# is an operator-chosen positive integer unique within the account (no
+# provisioning step) — surfaced as env.CHAT_LIMIT.limit(). The in-memory fallback
+# is per-isolate, NOT a prod safety net, so this binding is a HARD release gate.
+[[env.portf.ratelimits]]
+name = "CHAT_LIMIT"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }
+
 [env.portf.vars]
 LOG_LEVEL = "info"
 EXPOSE_MATCH_INSIGHTS = "true"

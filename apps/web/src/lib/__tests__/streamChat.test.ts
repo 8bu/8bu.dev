@@ -90,4 +90,22 @@ describe("streamChatPortf", () => {
       }
     }).rejects.toThrow(/503/);
   });
+
+  it("yields a rate_limited signal on 429 (no throw, no SSE parse)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          mockResponse({ ok: false, status: 429, statusText: "Too Many Requests" }),
+        ),
+    );
+    const { streamChatPortf } = await import("@/lib/streamChat");
+    const ac = new AbortController();
+    const events: unknown[] = [];
+    for await (const ev of streamChatPortf("t429", "hi", ac.signal)) {
+      events.push(ev);
+    }
+    expect(events).toEqual([{ type: "rate_limited" }]);
+  });
 });

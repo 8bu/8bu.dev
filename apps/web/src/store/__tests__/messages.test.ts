@@ -139,6 +139,23 @@ describe("messages store", () => {
     expect(bot?.status).toBe("error");
   });
 
+  it("applies rate_limited: fake-streams RATE_LIMITED_EN, settles, no error toast, no empty bubble", async () => {
+    // The store imports the FE-local ClientChatEvent type; genFrom is typed to
+    // ChatStreamEvent, so cast the rate_limited event through unknown.
+    streamMock.mockReturnValue(genFrom([{ type: "rate_limited" } as unknown as ChatStreamEvent]));
+    vi.useFakeTimers();
+    const { useMessagesStore } = await import("@/store/messages");
+    const { RATE_LIMITED_EN } = await import("@/features/chat/tokens");
+    const sendPromise = useMessagesStore.getState().send("tRL", "too fast");
+    await vi.runAllTimersAsync();
+    await sendPromise;
+    await vi.advanceTimersByTimeAsync(10_000); // drain the fake-stream chain
+    const bot = useMessagesStore.getState().byThread["tRL"]!.find((m) => m.kind === "bot");
+    expect(bot?.noMatch).toBe(true);
+    expect(bot?.text).toBe(RATE_LIMITED_EN);
+    expect(bot?.status).toBe("settled");
+  });
+
   it("flushPersistNow writes to localStorage on terminal transition", async () => {
     streamMock.mockReturnValue(genFrom([{ type: "done" }]));
     const { useMessagesStore } = await import("@/store/messages");
@@ -341,5 +358,12 @@ describe("finishBot artifact hook", () => {
       expect(bot.meta?.imageSlug).toBe("hcmc-skyline");
       expect(bot.meta?.mood).toBe("proud");
     }
+  });
+});
+
+describe("rate-limit copy", () => {
+  it("RATE_LIMITED_EN matches the spec copy", async () => {
+    const { RATE_LIMITED_EN } = await import("@/features/chat/tokens");
+    expect(RATE_LIMITED_EN).toBe("you're going a bit fast — give it a sec and try again?");
   });
 });

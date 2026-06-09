@@ -34,6 +34,13 @@ export const FALLBACK_EN_POOL = [
 export const ERROR_FALLBACK_EN = "something broke on my end - give it another shot in a moment?";
 
 /**
+ * Shown when the server returns 429 (rate limited). Fake-streamed in the same
+ * no_match/deflection bubble styling — a throttle is a soft, non-error state,
+ * not a "rephrase" miss, so it's a single string, not a pool.
+ */
+export const RATE_LIMITED_EN = "you're going a bit fast — give it a sec and try again?";
+
+/**
  * Per-char delay for the client-side fake-stream of `no_match` fallback
  * text. Server emits `no_match` as a single event (no token stream); the
  * client paces the fallback char-by-char so the "thinking" UX matches

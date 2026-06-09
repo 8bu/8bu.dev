@@ -1,4 +1,3 @@
-import type { ChatStreamEvent } from "@8budev/core";
 import { create } from "zustand";
 
 import { matchArtifact } from "@/features/artifacts/match";
@@ -8,11 +7,13 @@ import {
   FAKE_STREAM_JITTER_MS,
   FALLBACK_EN_POOL,
   PERSIST_DEBOUNCE_MS,
+  RATE_LIMITED_EN,
   TITLE_MAX_LEN,
 } from "@/features/chat/tokens";
 import type { BotMessage, ChatMessage, UserMessage } from "@/features/chat/types";
 import { clearAbort, getOrCreateAbort } from "@/lib/inflight";
 import { streamChatPortf } from "@/lib/streamChat";
+import type { ClientChatEvent } from "@/lib/streamChat";
 import { usePreferencesStore } from "@/store/preferences";
 import { useThreadsStore } from "@/store/threads";
 
@@ -295,7 +296,7 @@ async function applyEvent(
   get: () => MessagesState,
   threadId: string,
   botId: string,
-  ev: ChatStreamEvent,
+  ev: ClientChatEvent,
 ): Promise<void> {
   switch (ev.type) {
     case "session":
@@ -325,6 +326,15 @@ async function applyEvent(
       await fakeStreamFallback(get, threadId, botId, fallback);
       break;
     }
+    case "rate_limited":
+      // Same UX as no_match (soft, non-error informational reply): mark the
+      // bubble, then AWAIT the char-by-char fake stream of the throttle copy.
+      // Reuses applyNoMatch + fakeStreamFallback so styling/pacing match a
+      // no_match bubble exactly — no new component, never an empty bubble, no
+      // error toast (that's the `error` arm, for real outages).
+      get().applyNoMatch(threadId, botId, "");
+      await fakeStreamFallback(get, threadId, botId, RATE_LIMITED_EN);
+      break;
     case "token":
       get().appendBotToken(threadId, botId, ev.content);
       break;
