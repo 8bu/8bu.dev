@@ -9,101 +9,40 @@ import { useSampledChips } from "../use-sampled-chips";
  * V2 spotlight composition root.
  *
  * Shape ported from the design source's `V2Desktop`
- * (`docs/superpowers/artifacts/cosimi2/project/variations-1-2.jsx`
- * line 140–189): full-height flex column, top bar (Wordmark + status
- * pill, space-between), centered headline block in a 560px column
- * (Composer + Chips + hint line) inside a `flex: 1` middle.
- *
- * Wordmark uses default props (size=14, sub="Senior Web Developer")
- * to match the design's V2 placement - distinct from the sidebar's
- * compact `sub={null} size={13}` call. Layout is inline-styled rather
- * than adding classes to portfolio.css (which is locked for verbatim
- * preservation).
+ * (`docs/superpowers/artifacts/cosimi2/project/variations-1-2.jsx` line
+ * 140-189) for desktop, and `V2Mobile` (line 193-219) for ≤768px: layout
+ * lives in `.home-*` classes in layout.css (base = desktop values, a mobile
+ * `@media` block matches the compact V2Mobile prototype). Inline styles were
+ * removed so the mobile overrides can win — inline styles can't be media-scoped.
  */
 export function HomePane() {
   const composerRef = useRef<ComposerHandle>(null);
   const chips = useSampledChips(5);
 
   return (
-    <main
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100%",
-        padding: "22px 28px",
-      }}
-    >
-      {/* Top bar - Wordmark left, "open for roles" status pill right. */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <main className="home-pane">
+      {/* Top bar - Wordmark left, "open for roles" status right. */}
+      <div className="home-topbar">
         <Wordmark />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontFamily: "var(--font-mono)",
-            fontSize: 12,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "var(--ink-3)",
-          }}
-        >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: "var(--coral)",
-              display: "inline-block",
-            }}
-          />
-          <span>Open for senior roles · Q3 '26</span>
+        <div className="home-status">
+          <span className="home-status__dot" />
+          <span className="home-status__full">Open for senior roles · Q3 '26</span>
+          <span className="home-status__short">open</span>
         </div>
       </div>
 
       {/* Middle - centered headline + composer column. */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingBottom: 60,
-        }}
-      >
+      <div className="home-middle">
         <SpotlightHeadline />
-        <div style={{ width: 720, maxWidth: "100%" }}>
+        <div className="home-col">
           <Composer ref={composerRef} />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 18,
-            }}
-          >
+          <div className="home-chips">
             <ChipRow
               chips={chips}
               onPick={(label) => composerRef.current?.runChipAnimation(label)}
             />
           </div>
-          <div
-            style={{
-              marginTop: 20,
-              textAlign: "center",
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: "var(--ink-4)",
-            }}
-          >
+          <div className="home-hint">
             try · "show me your CV" · "what have you been writing?" · "give me your stack"
           </div>
         </div>

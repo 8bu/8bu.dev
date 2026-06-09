@@ -15,10 +15,11 @@ export function SpotlightHeadline() {
         <br />
         to know?
       </h1>
-      <p className="v2-sub">
+      <p className="v2-sub v2-sub--full">
         Senior Web Developer · product-minded · 10+ years shipping production web apps. Everything
         on this site is a chat - ask anything, or pick a prompt below.
       </p>
+      <p className="v2-sub v2-sub--short">Web Developer · 10+ yrs. Everything is a chat.</p>
     </>
   );
 }

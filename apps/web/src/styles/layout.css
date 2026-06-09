@@ -286,11 +286,155 @@ body,
 .input-row-mono {
   font-size: 14px;
 }
+/* iOS Safari auto-zooms the page when a focused <input> has font-size < 16px.
+ * Bump the composer input to 16px on mobile so focusing it never zooms; desktop
+ * keeps the 14px look. Placed AFTER the readability bump above so it wins by
+ * source order. NOT a `user-scalable=no` viewport hack (that kills pinch-zoom). */
+@media (max-width: 768px) {
+  .input-row-mono {
+    font-size: 16px;
+  }
+}
 .kbd {
   font-size: 11px;
 }
 .v2-sub {
   font-size: 15px;
+}
+
+/* ─── Suggestion chips: single-row horizontal scroll + 2-edge fade ─────
+ * Overrides portfolio.css `.chips { flex-wrap: wrap }` (layout.css loads
+ * after it). Wrapping looked bad on mobile; instead the row scrolls
+ * (native touch + drag-to-scroll via useDragScroll) and fades at both
+ * edges so the overflow reads as "more, swipe". */
+.chips {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 16px,
+    #000 calc(100% - 16px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 16px,
+    #000 calc(100% - 16px),
+    transparent 100%
+  );
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chips.is-dragging {
+  scroll-behavior: auto;
+  cursor: grabbing;
+  user-select: none;
+}
+.chip {
+  flex-shrink: 0;
+}
+
+/* ─── Home (V2 spotlight) layout. Base = desktop values (ported from the
+ * removed HomePane inline styles); the mobile @media below matches the
+ * compact V2Mobile prototype. ──────────────────────────────────────── */
+.home-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 22px 28px;
+}
+.home-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.home-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.home-status__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
+  display: inline-block;
+}
+.home-status__short {
+  display: none; /* desktop shows the full label */
+}
+.home-middle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px;
+}
+.home-col {
+  width: 720px;
+  max-width: 100%;
+}
+.home-chips {
+  margin-top: 18px;
+}
+.home-hint {
+  margin-top: 20px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.v2-sub--short {
+  display: none; /* desktop shows the full sub */
+}
+
+@media (max-width: 768px) {
+  /* V2Mobile prototype: compact top (no "- Senior Web Developer", short
+   * status), centered ~32px hero, short sub, no hint line. */
+  .home-pane {
+    padding: 14px 16px;
+  }
+  .home-topbar .wm-sub {
+    display: none;
+  }
+  .home-status__full {
+    display: none;
+  }
+  .home-status__short {
+    display: inline;
+  }
+  .home-middle {
+    padding-bottom: 30px;
+  }
+  .home-pane .v2-headline {
+    font-size: 32px;
+  }
+  .home-pane .v2-sub--full {
+    display: none;
+  }
+  .home-pane .v2-sub--short {
+    display: block;
+  }
+  .home-hint {
+    display: none;
+  }
+  .home-chips {
+    margin-top: 14px;
+  }
 }
 
 /* ─── Mobile-only chrome (hidden on desktop) ───────────────────────── */
@@ -336,8 +480,33 @@ body,
   .mobile-topbar {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
     border-bottom: 1px dashed var(--line);
+  }
+  .mobile-topbar__brand {
+    text-decoration: none;
+    color: inherit;
+  }
+  /* Burger bar rides ABOVE the thread header (which is also sticky top:0) and
+   * auto-hides on scroll-down / reveals on scroll-up, so the burger is reachable
+   * with a small upward scroll instead of scrolling the whole thread to the top. */
+  .chat-pane > .mobile-topbar {
+    z-index: 3;
+    transition: transform 200ms ease;
+    will-change: transform;
+  }
+  .mobile-topbar.is-hidden {
+    transform: translateY(-100%);
+  }
+  /* Bottom-anchor a short conversation so it hugs the composer instead of
+   * leaving a tall void under the header (the desktop column is tall enough
+   * that the void reads fine; the phone viewport isn't). margin-top:auto
+   * collapses once messages overflow, so tall threads still scroll normally.
+   * Scoped to mobile so desktop layout is untouched (spec A5). */
+  .chat-pane__messages > .message-list {
+    margin-top: auto;
   }
 }
 
@@ -490,8 +659,18 @@ body,
   letter-spacing: -0.018em;
   line-height: 1.05;
 }
+/* Summary deck under the title. A readable subtitle, NOT the mono `.kbd` label
+ * treatment — summaries are full sentences, and wide-tracked uppercase mono made
+ * them a cramped eyesore (esp. on mobile). The mono kicker still lives up in the
+ * chrome row (`.artifact-kicker`). */
 .artifact-panel-meta {
-  margin-top: 6px;
+  margin-top: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-3);
+  max-width: 60ch;
+  text-wrap: pretty;
 }
 
 /* Scrollable body area. */
@@ -583,17 +762,25 @@ body,
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--coral);
-  /* Modern path: 3-line drop, 1-line sink. Chrome 110+, Safari 9+. */
+  /* Modern path: 3-line drop, 1-line sink. Chrome 110+, Safari 9+. The browser
+   * sizes + sinks the cap and reserves exactly the right lines, so it never
+   * overflows below a short first paragraph. */
   initial-letter: 3 1;
   -webkit-initial-letter: 3 1;
   margin-right: 10px;
-  /* Fallback for browsers without initial-letter: float + tuned metrics
-   * to span ~3 body lines (body line-height 1.6 × 16px ≈ 25.6px, so cap
-   * ≈ 80px). */
-  font-size: 80px;
-  line-height: 0.85;
-  padding-top: 6px;
-  float: left;
+}
+/* Fallback ONLY where initial-letter is unsupported. Gated so it never doubles
+ * up with the modern path (which caused an 80px floated letter to also apply in
+ * supporting browsers, and to spill ~3 lines BELOW a short first paragraph —
+ * the "big letter at the bottom" artefact). float + tuned metrics span ~3 body
+ * lines (line-height 1.6 × 16px ≈ 25.6px → cap ≈ 80px). */
+@supports not (initial-letter: 3 1) and (not (-webkit-initial-letter: 3 1)) {
+  .artifact-body.is-essays p:first-of-type::first-letter {
+    font-size: 80px;
+    line-height: 0.85;
+    padding-top: 6px;
+    float: left;
+  }
 }
 .artifact-body.is-essays h2 {
   font-family: var(--font-display);
@@ -601,6 +788,19 @@ body,
   font-size: 19px;
   letter-spacing: -0.01em;
   margin: 20px 0 10px;
+}
+/* Narrow columns: a 3-line cap dominates the measure. Drop to 2 lines on mobile
+ * (modern + fallback paths both retuned). */
+@media (max-width: 768px) {
+  .artifact-body.is-essays p:first-of-type::first-letter {
+    initial-letter: 2 1;
+    -webkit-initial-letter: 2 1;
+  }
+  @supports not (initial-letter: 2 1) and (not (-webkit-initial-letter: 2 1)) {
+    .artifact-body.is-essays p:first-of-type::first-letter {
+      font-size: 52px;
+    }
+  }
 }
 .artifact-body.is-essays blockquote {
   border-left: 2px solid var(--coral);

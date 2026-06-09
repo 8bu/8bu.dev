@@ -21,6 +21,18 @@ vi.mock("@/store/ui", () => {
   return { useUiStore: useStore };
 });
 
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({ children, ...p }: { children: React.ReactNode }) => <a {...p}>{children}</a>,
+  useNavigate: () => vi.fn(),
+}));
+
+vi.mock("@/store/threads", () => {
+  const state = { create: () => "new-thread-id", threads: [] as { id: string; title?: string }[] };
+  const useStore = (sel: (s: typeof state) => unknown) => sel(state);
+  useStore.getState = () => state;
+  return { useThreadsStore: useStore };
+});
+
 describe("ChatPane", () => {
   beforeEach(async () => {
     // jsdom doesn't implement scrollTo; stub so MessageList's useEffect
@@ -53,5 +65,13 @@ describe("ChatPane", () => {
     const { ChatPane } = await import("@/features/chat/components/ChatPane");
     const { container } = render(<ChatPane threadId="t1" />);
     expect(container.querySelector(".mobile-topbar")).not.toBeNull();
+  });
+
+  it("mobile topbar has a brand link and a new-chat control", async () => {
+    const { ChatPane } = await import("@/features/chat/components/ChatPane");
+    const { container } = render(<ChatPane threadId="t1" />);
+    const topbar = container.querySelector(".mobile-topbar")!;
+    expect(topbar.querySelector(".mobile-topbar__brand")).not.toBeNull();
+    expect(topbar.querySelector('[aria-label="New chat"]')).not.toBeNull();
   });
 });

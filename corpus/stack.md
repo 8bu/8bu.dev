@@ -14,7 +14,11 @@ Tailwind across WegoPro, Multiplier, and SuperLauncher. SCSS across the resume. 
 
 ## Backend and infra
 
-Nest, Express, and Hono - I'm using Hono in Cosimi. On infrastructure I've worked AWS via the Serverless framework at WegoPro, Cloudflare, and Stripe.
+Nest, Express, and Hono - I'm using Hono in Cosimi, deployed on a Cloudflare Worker. On infrastructure I've worked AWS via the Serverless framework at WegoPro, Cloudflare, and Stripe.
+
+## Data and AI
+
+Postgres with pgvector is the retrieval substrate behind Cosimi - a GraphRAG engine I built: documents chunked into a graph, embedded (bge-m3, 1024-dim) into pgvector, and retrieved by vector search plus a graph walk at request time. The AI work is build-time: I use the Anthropic Claude SDK to generate the question-answer corpus and audit it with a second model before it's embedded - no LLM in the live request path. It's where I've gone fullstack: schema and migrations, the ingest pipeline, and the edge API, not just the frontend.
 
 ## Testing
 

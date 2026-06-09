@@ -1,4 +1,5 @@
 import { useSampledChips } from "@/features/home/use-sampled-chips";
+import { useDragScroll } from "@/lib/useDragScroll";
 import { useMessagesStore } from "@/store/messages";
 
 interface ChatChipsProps {
@@ -21,9 +22,10 @@ interface ChatChipsProps {
 export function ChatChips({ threadId }: ChatChipsProps) {
   const send = useMessagesStore((s) => s.send);
   const chips = useSampledChips(5);
+  const dragRef = useDragScroll<HTMLDivElement>();
 
   return (
-    <div className="chips" style={{ marginBottom: 10 }}>
+    <div className="chips" ref={dragRef} style={{ marginBottom: 10 }}>
       {chips.map((c) => (
         <button
           key={c.label}

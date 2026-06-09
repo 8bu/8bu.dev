@@ -1,0 +1,54 @@
+---
+slug: cosimi
+kind: projects
+title: Cosimi
+kicker: open artifact
+period: "2026"
+stack:
+  - TypeScript
+  - Postgres
+  - pgvector
+  - Cloudflare Workers
+  - bge-m3
+  - Hono
+summary: A shipped GraphRAG retrieval engine with no LLM at query time. It powers this chat, live in production.
+thumb: null
+matchPatterns:
+  - cosimi
+  - graphrag
+  - retrieval engine
+  - what powers this chat
+  - is this an llm
+locale: en
+order: 2
+repo: https://github.com/8bu/cosimi
+---
+
+## What it is
+
+Cosimi is the engine behind this chat - the one you're using right now, live in production. A deterministic GraphRAG retrieval SDK with no LLM in the request path. You ask a question, it embeds it, runs a vector search over a graph of chunks and Q&A pairs, and returns a ranked answer. Same question, same data, same answer - every time. No hallucination, no token cost per reply.
+
+This whole site is the proof. Every answer you get here is Cosimi, not a language model improvising.
+
+## How an answer is built
+
+Two layers, both deterministic:
+
+- **Curated first.** Common questions and the suggestion chips hit a hand-written answer map - exact, on-message, instant.
+- **Retrieval for the rest.** Anything else embeds the query with bge-m3, seeds from the nearest chunks and pairs, walks the graph a couple of hops for context, then ranks. Pure vector math and a graph walk - the model never sees your question.
+
+## How it's fed
+
+A separate offline step turns source docs into the corpus: an LLM chunks them into a graph, generates and audits Q&A pairs, and embeds everything into Postgres + pgvector. That is the only place an LLM ever runs, and it runs on my machine, not in the request path.
+
+## Why I built it
+
+I wanted a portfolio that answers as me, not as a chatbot guessing. So I built the retrieval layer myself: curated, grounded, reproducible, and cheap enough to run on the edge with zero per-message LLM cost. The constraints made it better - deterministic answers are easier to trust, easier to debug, and they don't surprise me in front of a recruiter.
+
+## Where it's at
+
+Shipped and running. Published as a set of `@cosimi/*` packages on npm - an SDK plus adapters - where the infra drivers (Postgres, embedders, the offline LLM) are peer dependencies the consumer injects, so the core stays Workers-safe and adapter-agnostic. Deployed all-Cloudflare: Pages + Workers + Hyperdrive to Neon Postgres, embedding with Workers AI in prod and ollama in dev - one bge-m3 vector space across both.
+
+## Stack details
+
+TypeScript, Postgres + pgvector, bge-m3 embeddings (ollama in dev, Workers AI in prod), Cloudflare Workers + Hyperdrive, Hono, Anthropic (offline ingest only), pnpm + Turbo monorepo, Vitest, Neon.

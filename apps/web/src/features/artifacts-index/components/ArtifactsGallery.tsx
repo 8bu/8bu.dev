@@ -49,7 +49,7 @@ export function ArtifactsGallery() {
       <div className="artx-head">
         <div>
           <span className="kbd" style={{ color: "var(--coral)" }}>
-            ↗ ARTIFACTS · {total} ITEMS
+            ↗ PORTFOLIO · {total} ITEMS
           </span>
           <h1 className="artx-title">
             Everything,

@@ -31,7 +31,7 @@ export function ArtifactPreviewCard({ descriptor, onOpen }: ArtifactPreviewCardP
         tabIndex={0}
         onClick={() => onOpen(descriptor)}
         onKeyDown={handleKey}
-        aria-label={`Open artifact: ${descriptor.title}`}
+        aria-label={`Open portfolio item: ${descriptor.title}`}
       >
         {descriptor.thumb ? (
           <img className="artifact-preview-card-thumb" src={descriptor.thumb} alt="" />

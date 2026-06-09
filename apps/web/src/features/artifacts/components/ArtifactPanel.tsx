@@ -56,7 +56,7 @@ export function ArtifactPanel({
       className="artifact-pane"
       tabIndex={-1}
       onKeyDown={onKeyDown}
-      aria-label="Artifact pane"
+      aria-label="Portfolio pane"
     >
       <div className="artifact-chrome">
         <div className="artifact-chrome-top">
@@ -77,7 +77,7 @@ export function ArtifactPanel({
             onKeyDown={handleKey}
             role="button"
             tabIndex={0}
-            title="close artifact"
+            title="close portfolio"
           >
             ×
           </span>
@@ -85,7 +85,7 @@ export function ArtifactPanel({
       </div>
       <div className="artifact-panel-head">
         <div className="artifact-panel-title">{title}</div>
-        {meta && <div className="artifact-panel-meta kbd">{meta}</div>}
+        {meta && <div className="artifact-panel-meta">{meta}</div>}
       </div>
       <div ref={bodyRef} className="artifact-panel-body">
         {children}

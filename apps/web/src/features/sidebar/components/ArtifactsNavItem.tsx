@@ -26,11 +26,11 @@ export function ArtifactsNavItem() {
       to="/artifacts"
       onClick={() => setSidebarOpen(false)}
       className="v1-thread v1-nav-item"
-      aria-label="Browse all artifacts"
+      aria-label="Browse portfolio"
       style={{ textDecoration: "none", color: "inherit" }}
     >
       <span className="v1-nav-ico" aria-hidden="true" />
-      <span>Artifacts</span>
+      <span>Portfolio</span>
       <span className="v1-nav-count">{String(count).padStart(2, "0")}</span>
     </Link>
   );

@@ -110,3 +110,34 @@ describe("runChat (GraphRAG)", () => {
     expect(row[0]?.source).toBe("chat");
   });
 });
+
+// cosine(v, unitVec(0)) === c. The mocked embedder returns unitVec(0) for every
+// query, so a pair seeded with this vector lands at exactly similarity c.
+function vecAtCosine(c: number, dim = 1024): number[] {
+  const v = Array.from({ length: dim }, () => 0);
+  v[0] = c;
+  v[1] = Math.sqrt(1 - c * c);
+  return v;
+}
+
+describe("runChat confidence floor", () => {
+  it("deflects (no_match) when the best answerable hit is below the floor", async () => {
+    const docId = await seedDocument("kb", "portfolio/artifact/longnguyen-2026");
+    const chunkId = await seedChunk(docId, 0, vecAtCosine(0.48), "weakish chunk");
+    await seedLinkedPair(chunkId, "obscure q", "weakish answer", vecAtCosine(0.48));
+
+    const ev = await collect("some unanswered question");
+    expect(ev.some((e) => e.type === "no_match")).toBe(true);
+    expect(ev.some((e) => e.type === "token")).toBe(false);
+  });
+
+  it("does NOT deflect a confident hit above the floor", async () => {
+    const docId = await seedDocument("kb", "portfolio/artifact/longnguyen-2026");
+    const chunkId = await seedChunk(docId, 0, vecAtCosine(0.7), "good chunk");
+    await seedLinkedPair(chunkId, "good q", "good answer", vecAtCosine(0.7));
+
+    const ev = await collect("a good question");
+    expect(ev.some((e) => e.type === "no_match")).toBe(false);
+    expect(ev.some((e) => e.type === "token")).toBe(true);
+  });
+});

@@ -7,12 +7,12 @@ describe("ArtifactPanel chrome + behaviors", () => {
   it("renders kicker prefixed with ↗ glyph", async () => {
     const { ArtifactPanel } = await import("@/features/artifacts/components/ArtifactPanel");
     render(
-      <ArtifactPanel kicker="ARTIFACT · WEGOPRO" title="WegoPro" onClose={() => {}}>
+      <ArtifactPanel kicker="PORTFOLIO · WEGOPRO" title="WegoPro" onClose={() => {}}>
         body
       </ArtifactPanel>,
     );
     const kicker = document.querySelector(".artifact-kicker");
-    expect(kicker?.textContent).toBe("↗ ARTIFACT · WEGOPRO");
+    expect(kicker?.textContent).toBe("↗ PORTFOLIO · WEGOPRO");
   });
 
   it("auto-focuses the section on mount so Esc works without manual tab-in", async () => {

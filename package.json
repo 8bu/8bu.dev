@@ -23,7 +23,8 @@
     "oxlint": "^1.0.0",
     "tsx": "^4.19.0",
     "turbo": "^2.3.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "yaml": "^2.9.0"
   },
   "engines": {
     "node": ">=22",

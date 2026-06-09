@@ -57,6 +57,21 @@ export async function seedLinkedPair(
   return id;
 }
 
+/** Insert a document-less seed pair (source='seed', audit_status='seed') with an embedding + topic. */
+export async function seedSeedPair(
+  input: string,
+  response: string,
+  vec: number[],
+  topic: string | null = null,
+): Promise<number> {
+  const [row] = await sql()<{ id: number }[]>`
+    INSERT INTO pairs (input, normalized_input, response, source, audit_status, topic, locale, embedding)
+    VALUES (${input}, ${input}, ${response}, 'seed', 'seed', ${topic}, 'en', ${vlit(vec)}::vector)
+    RETURNING id::int AS id
+  `;
+  return row!.id;
+}
+
 /** Truncate the GraphRAG corpus tables between tests. */
 export async function resetCorpus(): Promise<void> {
   await sql()`TRUNCATE documents CASCADE`;

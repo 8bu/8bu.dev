@@ -11,11 +11,11 @@ WegoPro, 2022-2026 - Web Developer on B2B travel and expense, remote. BlockDevs,
 
 ## Selected projects
 
-WegoPro, Multiplier.finance, SuperLauncher, Motorist.sg, Letterink. The marquee is the WegoPro Nuxt 2 to 4 migration - I led the bridge-layer strategy in Vue 3 web components and solo-migrated the back-office to Nuxt 4 + Nuxt UI.
+WegoPro, Multiplier.finance, SuperLauncher, Motorist.sg, Letterink. The marquee is the WegoPro Nuxt 2 to 4 migration - I led the bridge-layer strategy in Vue 3 web components and solo-migrated the back-office to Nuxt 4 + Nuxt UI. Cosimi is the fullstack/AI one - a GraphRAG engine on Postgres + pgvector with a build-time Claude ingest pipeline, powering this chat.
 
 ## Stack
 
-TypeScript, Vue/Nuxt, React/Next, Tailwind, SCSS, Pinia/Vuex, Web3.js / Ethers.
+TypeScript, Vue/Nuxt, React/Next, Tailwind, SCSS, Pinia/Vuex, Web3.js / Ethers. Fullstack and AI: Hono on Cloudflare Workers, Postgres + pgvector, GraphRAG, the Anthropic Claude SDK.
 
 ## AI workflow
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useThreadsStore, type ThreadIndexEntry } from "@/store/threads";
+import { useUiStore } from "@/store/ui";
 import { formatRelativeTs } from "@/lib/formatRelativeTs";
 
 interface ThreadRowProps {
@@ -28,6 +29,7 @@ export function ThreadRow({ entry }: ThreadRowProps) {
   const isActive = entry.id === params.threadId;
   const rename = useThreadsStore((s) => s.rename);
   const remove = useThreadsStore((s) => s.remove);
+  const setSidebarOpen = useUiStore((s) => s.setSidebarOpen);
   const [isEditing, setEditing] = useState(false);
   const [draft, setDraft] = useState(entry.title ?? "");
 
@@ -36,6 +38,7 @@ export function ThreadRow({ entry }: ThreadRowProps) {
       className={`v1-thread${isActive ? " active" : ""}`}
       onClick={() => {
         if (isEditing) return;
+        setSidebarOpen(false);
         void navigate({
           to: "/chat/$threadId",
           params: { threadId: entry.id },

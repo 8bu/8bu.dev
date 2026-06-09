@@ -1,3 +1,4 @@
+import { useDragScroll } from "@/lib/useDragScroll";
 import type { SuggestionChip } from "../data";
 
 interface ChipRowProps {
@@ -17,8 +18,9 @@ interface ChipRowProps {
  * (docs/superpowers/artifacts/cosimi2/project/primitives.jsx:143-155).
  */
 export function ChipRow({ chips, onPick }: ChipRowProps) {
+  const dragRef = useDragScroll<HTMLDivElement>();
   return (
-    <div className="chips">
+    <div className="chips" ref={dragRef}>
       {chips.map((c) => (
         <button key={c.label} type="button" className="chip" onClick={() => onPick(c.label)}>
           <span className="chip-mark">{c.mark}</span>

@@ -14,11 +14,11 @@ describe("<ArtifactPanel>", () => {
   it("renders kicker, title, meta", async () => {
     const ArtifactPanel = await load();
     render(
-      <ArtifactPanel kicker="ARTIFACT · WEGOPRO" title="WegoPro" meta="x" onClose={() => {}}>
+      <ArtifactPanel kicker="PORTFOLIO · WEGOPRO" title="WegoPro" meta="x" onClose={() => {}}>
         <div data-testid="body">body</div>
       </ArtifactPanel>,
     );
-    expect(screen.getByText("↗ ARTIFACT · WEGOPRO")).toBeTruthy();
+    expect(screen.getByText("↗ PORTFOLIO · WEGOPRO")).toBeTruthy();
     expect(screen.getByText("WegoPro")).toBeTruthy();
     expect(screen.getByText("x")).toBeTruthy();
     expect(screen.getByTestId("body")).toBeTruthy();

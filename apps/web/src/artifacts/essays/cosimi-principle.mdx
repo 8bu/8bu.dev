@@ -1,0 +1,59 @@
+---
+slug: cosimi-principle
+kind: essays
+title: The Cosimi Principle
+kicker: essay
+period: "2026"
+stack:
+  - Cosimi
+  - GraphRAG
+  - LLM
+  - pgvector
+summary: The model lies. So put it where it can't lie to the user - fenced to build time, grounded on your own words, audited before it ever answers live.
+thumb: null
+matchPatterns:
+  - cosimi principle
+  - put the model where it can't lie
+  - why no llm at query time
+  - deterministic chat
+  - honesty over fluency
+  - llm offline
+locale: en
+order: 3
+---
+
+The default way to build a "talk to me" box on a portfolio is to bolt a hosted LLM onto it and hope. It solves the dialogue problem in an afternoon and creates a worse one that never goes away: the replies stop being yours. A recruiter asks something I haven't thought through, and the model fills the gap with its prior over what a developer named Long might plausibly say - smoothed into corporate-safe verbs, confident, and wrong in my voice.
+
+Cosimi is the answer to one question: where do you put the model so it can't lie about you? The answer turned out to be a design principle, not a chatbot trick. This is that principle, and the system that proves it.
+
+## The hallucination problem
+
+The failure mode of a request-path LLM is not that it's sometimes wrong. It's that it's wrong _confidently_ and _in character_. There is no visible seam between "this is a thing Long actually believes" and "this is a fluent guess." Both arrive in the same voice, the same cadence, the same first person. The reader can't tell, and worse, neither can I until I catch it in front of the person I least wanted to catch it in front of.
+
+For a portfolio that speaks as me, that's disqualifying. I would rather the answer be silence than a hallucination wearing my name. So the real requirement was never "build a chatbot." It was: make the failure mode legible. If the system doesn't have a grounded answer, it should say so - not improvise one.
+
+## So I fenced the model to build time
+
+The instinct is to fix this with prompting - system prompts, guardrails, "only answer from the provided context." That's fighting the model in the one place it's most dangerous: live, in front of the user, with no second look. So I moved the fight somewhere I could win it.
+
+In Cosimi the LLM still does almost all the labor. It just does it offline, before anyone is watching. The pipeline runs on my machine: it takes my source documents, chunks them into a graph, generates question-answer pairs off those chunks with one model, audits every pair with a second model, and embeds the survivors into Postgres with pgvector. Chunks, pairs, all of it - generated. None of it hand-typed.
+
+Then it freezes. At request time there is no model in the path at all. Your question gets embedded, a vector search seeds from the nearest chunks and pairs, the engine walks the graph a couple of hops for context, ranks, and returns. Pure vector math and a graph walk. Same question, same data, same answer, every time. Zero token cost per reply, cheap enough to run on the edge. The model that wrote the answers never sees the question that retrieves them.
+
+That separation is the whole trick. Generation and retrieval happen in different time zones. The model is creative where creativity is safe - against my words, with an auditor watching - and absent where creativity is a liability.
+
+## Generation isn't the enemy
+
+Here's the part I got wrong the first time, and it's worth saying plainly because it's the actual principle. The earlier version of this system was a lexical pattern-matcher where I hand-wrote every reply, and I told myself the honesty came from that - from the hand-craft, from "every answer is one I wrote." That's a nice story and it's false. It doesn't scale, and it isn't where the trust comes from.
+
+The trust comes from the boundary, not the byline. A model generating answers is fine. A model generating answers _from my own source_, _checked by another model_, _frozen before it can reach anyone_ - that's not a hallucination risk, that's a build artifact. The same generative capability that's reckless in the request path is just productive labor in the ingest path, because the ingest path has three things the request path can't have: grounding, audit, and a human who can read the output before it ships.
+
+So what do I actually own in Cosimi? Not the corpus - the model builds that. I own the source it's grounded on, the audit gate it has to pass, and the small hand-written canonical layer for the questions I want answered exactly. The LLM does the work. The boundary makes the work trustworthy. Those are different jobs, and conflating them is how you end up trusting a model because it sounds careful.
+
+## The design law
+
+Strip away the portfolio and the chat and the principle is this: **put the model where it can't lie to the user.**
+
+A language model will generate confidently regardless of whether it knows. That's not a bug you prompt away; it's the shape of the thing. So the design question is never "how do I stop it from lying" - it's "where can it lie without reaching anyone." Build time, grounded on real source, behind an audit, frozen into an artifact someone can inspect: there, generation is an asset. Request time, ungrounded, unreviewed, speaking as a person: there, the same generation is a liability you've handed straight to your most important reader.
+
+Cosimi is one instance - a portfolio that answers as me, deterministically, for free, at the edge. But the law outlives the chatbot. Any system that puts words in a user's face as fact, in someone's voice, faces the same fork: let the model improvise live, or fence it to where its mistakes are caught before they cost you. The trade is depth-for-honesty, and for anything that speaks _as_ you, it's the right trade every time.

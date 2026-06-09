@@ -20,7 +20,7 @@ interface Props {
 function kickerFor(d: ArtifactDescriptor): string {
   switch (d.kind) {
     case "projects":
-      return `ARTIFACT · ${d.title} · ${d.period}`;
+      return `PORTFOLIO · ${d.title} · ${d.period}`;
     case "essays":
       return `ESSAY · ${d.period}`;
     case "resume":

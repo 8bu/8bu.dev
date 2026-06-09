@@ -193,7 +193,7 @@ describe("MessageBubble artifact preview", () => {
     };
 
     render(<Fresh message={bot} />);
-    fireEvent.click(screen.getByRole("button", { name: /open artifact: wegopro/i }));
+    fireEvent.click(screen.getByRole("button", { name: /open portfolio item: wegopro/i }));
 
     expect(navigateMock).toHaveBeenCalledTimes(1);
     const rawCall = navigateMock.mock.calls[0] as unknown as [{ to: string; search: unknown }];

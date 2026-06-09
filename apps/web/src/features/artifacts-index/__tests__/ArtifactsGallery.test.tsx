@@ -104,7 +104,7 @@ describe("ArtifactsGallery", () => {
     const { ArtifactsGallery } =
       await import("@/features/artifacts-index/components/ArtifactsGallery");
     render(<ArtifactsGallery />);
-    expect(screen.getByText(/ARTIFACTS · 5 ITEMS/)).toBeInTheDocument();
+    expect(screen.getByText(/PORTFOLIO · 5 ITEMS/)).toBeInTheDocument();
     expect(screen.getByText(/Everything,/)).toBeInTheDocument();
   });
 

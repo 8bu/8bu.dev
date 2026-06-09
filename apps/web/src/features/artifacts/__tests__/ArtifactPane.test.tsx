@@ -44,7 +44,7 @@ describe("<ArtifactPane>", () => {
   it("renders project kicker, project body, and project action", async () => {
     const { ArtifactPane } = await import("@/features/artifacts/components/ArtifactPane");
     const { container } = render(<ArtifactPane descriptor={d()} />);
-    expect(screen.getByText("↗ ARTIFACT · WegoPro · 2022–2026")).toBeTruthy();
+    expect(screen.getByText("↗ PORTFOLIO · WegoPro · 2022–2026")).toBeTruthy();
     expect(container.querySelector(".artifact-body.is-projects")).toBeTruthy();
     expect(container.querySelector("a.artifact-action")?.getAttribute("href")).toBe(
       "https://wegopro.com",

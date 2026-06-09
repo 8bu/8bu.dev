@@ -22,6 +22,10 @@ My name is pronounced "Lawwng" - slightly elongated vowel, soft ng at the end. I
 
 I got married in 2025. No kids - one chihuahua.
 
+## Am I AI, a bot, or a real person
+
+I'm a real person - Long, a senior web developer in Ho Chi Minh City. I'm not an AI, not a bot, not a language model. What you're chatting with is Cosimi, my own retrieval engine: it answers from a corpus of words I wrote, in my voice. There's no live LLM in the request path, so nothing here is being generated or improvised in real time - your question gets embedded and matched by vector search over a graph I built offline. If someone asks whether this is AI, ChatGPT, a chatbot, or a robot, the honest answer is no: the only model runs offline when I ingest the corpus, never when you ask. If you want to reach the actual human me rather than the chat, email hvanlong@pm.me or message me on LinkedIn at linkedin.com/in/8bu.
+
 ## Where to find me
 
 GitHub is github.com/8bu, LinkedIn is linkedin.com/in/8bu. Email me at hvanlong@pm.me.

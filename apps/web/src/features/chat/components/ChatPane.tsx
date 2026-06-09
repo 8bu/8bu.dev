@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useMessagesStore } from "@/store/messages";
 import { ChatChips } from "@/features/chat/components/ChatChips";
 import { ChatComposer } from "@/features/chat/components/ChatComposer";
@@ -5,6 +6,9 @@ import { ChatHeader } from "@/features/chat/components/ChatHeader";
 import { EmptyChatPane } from "@/features/chat/components/EmptyChatPane";
 import { MessageList } from "@/features/chat/components/MessageList";
 import { MobileBurger } from "@/features/sidebar/components/MobileBurger";
+import { MobileNewChatButton } from "@/features/sidebar/components/NewChatButton";
+import { Wordmark } from "@/components/Wordmark";
+import { useRevealOnScrollUp } from "@/lib/useRevealOnScrollUp";
 import type { ChatMessage } from "@/features/chat/types";
 
 interface ChatPaneProps {
@@ -27,11 +31,18 @@ const EMPTY: readonly ChatMessage[] = Object.freeze([]);
  */
 export function ChatPane({ threadId }: ChatPaneProps) {
   const messages = useMessagesStore((s) => s.byThread[threadId] ?? EMPTY);
+  // Mobile: auto-hide the burger bar on scroll-down, reveal on scroll-up, so the
+  // burger is reachable without scrolling the whole thread back to the top.
+  const [paneRef, topbarHidden] = useRevealOnScrollUp<HTMLElement>();
 
   return (
-    <main className="chat-pane">
-      <div className="mobile-topbar">
+    <main className="chat-pane" ref={paneRef}>
+      <div className={`mobile-topbar${topbarHidden ? " is-hidden" : ""}`}>
         <MobileBurger />
+        <Link to="/" className="mobile-topbar__brand" aria-label="Back to home">
+          <Wordmark sub={null} size={12} />
+        </Link>
+        <MobileNewChatButton />
       </div>
       <ChatHeader threadId={threadId} messages={messages} />
       <div className="chat-pane__messages">

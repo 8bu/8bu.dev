@@ -37,7 +37,7 @@ deploy_web_pages() {
   print_info "Deploying web → Pages (portf project → 8bu.dev)…"
   # TanStack Start prerender output lives in dist/client.
   # shellcheck disable=SC2086
-  $WRANGLER pages deploy apps/web/dist/client --project-name portf --branch main
+  $WRANGLER pages deploy apps/web/dist/client --project-name portf --branch production
   print_success "web Pages deployed."
 }
 
@@ -52,7 +52,7 @@ deploy_all() {
   run_gates
   pnpm --filter @8budev/web build
   # shellcheck disable=SC2086
-  $WRANGLER pages deploy apps/web/dist/client --project-name portf --branch main
+  $WRANGLER pages deploy apps/web/dist/client --project-name portf --branch production
   (cd services/api && pnpm exec wrangler deploy -e portf)
   print_success "Full deploy complete: https://8bu.dev"
 }

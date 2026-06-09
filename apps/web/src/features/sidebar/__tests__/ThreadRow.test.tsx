@@ -2,10 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ThreadIndexEntry } from "@/store/threads";
 
-const { navigateMock, renameMock, removeMock } = vi.hoisted(() => ({
+const { navigateMock, renameMock, removeMock, setSidebarOpenMock } = vi.hoisted(() => ({
   navigateMock: vi.fn(),
   renameMock: vi.fn(),
   removeMock: vi.fn(),
+  setSidebarOpenMock: vi.fn(),
 }));
 
 vi.mock("@tanstack/react-router", () => ({
@@ -21,6 +22,14 @@ vi.mock("@/store/threads", () => ({
   ),
 }));
 
+vi.mock("@/store/ui", () => ({
+  useUiStore: Object.assign(
+    (sel: (s: { setSidebarOpen: typeof setSidebarOpenMock }) => unknown) =>
+      sel({ setSidebarOpen: setSidebarOpenMock }),
+    { getState: () => ({ setSidebarOpen: setSidebarOpenMock }) },
+  ),
+}));
+
 const entry: ThreadIndexEntry = { id: "t1", ts: Date.now(), title: "hello world" };
 
 describe("ThreadRow", () => {
@@ -28,6 +37,15 @@ describe("ThreadRow", () => {
     navigateMock.mockReset();
     renameMock.mockReset();
     removeMock.mockReset();
+    setSidebarOpenMock.mockReset();
+  });
+
+  it("closes the mobile drawer on row click", async () => {
+    const { ThreadRow } = await import("@/features/sidebar/components/ThreadRow");
+    const { container } = render(<ThreadRow entry={entry} />);
+    fireEvent.click(container.querySelector(".v1-thread")!);
+    expect(navigateMock).toHaveBeenCalled();
+    expect(setSidebarOpenMock).toHaveBeenCalledWith(false);
   });
 
   it("renders title + meta", async () => {

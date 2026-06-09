@@ -1,11 +1,18 @@
 import { Hono } from "hono";
 import * as v from "valibot";
 
-import { insertPair, sql } from "@cosimi/adapter-postgres";
+import {
+  createBatch,
+  insertPair,
+  setBatchCount,
+  setPairVector,
+  sql,
+} from "@cosimi/adapter-postgres";
 import { normalize } from "@cosimi/normalizer";
 import type { AdminPair } from "@cosimi/core";
 
 import { PaginationSchema } from "../lib/pagination";
+import { createSeedEmbedder } from "../lib/seed-embedder";
 
 const CreateSchema = v.object({
   input: v.pipe(v.string(), v.nonEmpty(), v.maxLength(2000)),
@@ -42,6 +49,18 @@ const ListQuerySchema = v.object({
 });
 
 const IdSchema = v.pipe(v.string(), v.decimal(), v.transform(Number), v.integer(), v.minValue(1));
+
+// Artifact deep-link slug, same shape as ingest's TopicSchema.
+const SeedTopicSchema = v.pipe(v.string(), v.maxLength(120), v.regex(/^[a-z0-9/-]+$/));
+const SeedItemSchema = v.object({
+  input: v.pipe(v.string(), v.nonEmpty(), v.maxLength(2000)),
+  response: v.pipe(v.string(), v.nonEmpty(), v.maxLength(2000)),
+  topic: v.optional(SeedTopicSchema),
+  locale: v.optional(v.pipe(v.string(), v.maxLength(16))),
+});
+const SeedBodySchema = v.object({
+  pairs: v.pipe(v.array(SeedItemSchema), v.minLength(1), v.maxLength(400)),
+});
 
 export const pairsRoute = new Hono();
 
@@ -101,6 +120,55 @@ pairsRoute.post("/", async (c) => {
     return inserted;
   });
   return c.json({ id }, 201);
+});
+
+/**
+ * Document-less seed pairs. Writes curated Q&A straight into `pairs` with
+ * source='seed', source_chunk=NULL, embedding set, and audit_status='seed'.
+ * The 'seed' status (out of the AuditStatus union, but the column has no CHECK)
+ * keeps these OUT of the SDK retriever's pair_near (which filters audit_status
+ * ='pass' and would crash on a chunk-less pair) — services/api retrieves them
+ * via its own app-level step. Embed-first then transactional full-replace, so a
+ * failed embed never leaves a half-replaced store.
+ */
+pairsRoute.post("/seed", async (c) => {
+  const body = await c.req.json().catch(() => null);
+  const parsed = v.safeParse(SeedBodySchema, body);
+  if (!parsed.success) return c.json({ error: "invalid body" }, 400);
+  const items = parsed.output.pairs;
+
+  // 1. Embed everything first (the slow/failing part) before mutating the store.
+  const embeddings = await createSeedEmbedder().embed(items.map((p) => p.input));
+
+  // 2. Batch label, then 3. transactional delete-then-insert.
+  const batchId = await createBatch("seed", undefined, "interview seed pairs");
+  const db = sql();
+  const replaced = await db.begin(async (tx) => {
+    const del = await tx`
+      UPDATE pairs SET deleted_at = NOW(), updated_at = NOW()
+       WHERE source = 'seed' AND deleted_at IS NULL
+    `;
+    for (let i = 0; i < items.length; i++) {
+      const p = items[i]!;
+      const { id } = await insertPair(
+        {
+          input: p.input,
+          response: p.response,
+          source: "seed",
+          topic: p.topic ?? null,
+          batch_id: batchId,
+          locale: p.locale ?? "en",
+        },
+        tx,
+      );
+      await setPairVector(id, { embedding: embeddings[i]! }, tx);
+      await tx`UPDATE pairs SET audit_status = 'seed' WHERE id = ${id}`;
+    }
+    return del.count;
+  });
+
+  await setBatchCount(batchId, items.length);
+  return c.json({ batchId, inserted: items.length, replaced }, 201);
 });
 
 pairsRoute.patch("/:id", async (c) => {
