@@ -4,13 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch --env-file=../../.env src/index.ts",
     "build": "tsc --noEmit",
     "deploy": "wrangler deploy --env portf",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint .",
-    "test": "vitest run",
-    "ingest": "tsx --env-file=.env scripts/ingest.ts"
+    "test": "vitest run"
   },
   "dependencies": {
     "@8budev/core": "workspace:*",
@@ -27,9 +26,6 @@
   "devDependencies": {
     "@8budev/db": "workspace:*",
     "@8budev/tsconfig": "workspace:*",
-    "@anthropic-ai/sdk": "^0.30.0",
-    "@cosimi/adapter-llm-anthropic": "^0.1.0",
-    "@cosimi/adapter-storage": "^0.1.0",
     "@types/node": "^22.0.0",
     "postgres": "^3.4.0",
     "tsx": "^4.19.0",

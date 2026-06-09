@@ -3,6 +3,7 @@ import { sql } from "@cosimi/adapter-postgres";
 import { createCosimi } from "@cosimi/sdk";
 import type { PairHit, ChunkHit } from "@cosimi/sdk";
 
+import { canonicalAnswer } from "../canonical";
 import { resolveEmbedder } from "../lib/embedder";
 import type { Emitter } from "../lib/sse";
 import { tokenize, jitterMs, sleep } from "../lib/tokenizer";
@@ -30,6 +31,26 @@ type Hit = PairHit | ChunkHit;
 export async function runChat(args: RunChatArgs): Promise<void> {
   const env = loadEnv();
   await args.emit({ type: "session", session_id: args.sessionId });
+
+  // Canonical override: chip labels + common questions get deterministic, on-topic
+  // answers BEFORE the GraphRAG retriever (whose ranking over short personal facts
+  // is noisy). The long tail falls through to retrieve().
+  const canon = canonicalAnswer(args.message);
+  if (canon) {
+    const exposeC = env.EXPOSE_MATCH_INSIGHTS;
+    await args.emit({
+      type: "metadata",
+      tier: exposeC ? "exact" : null,
+      confidence: exposeC ? 1 : null,
+      pairId: null,
+      score: exposeC ? 1 : null,
+      lowConfidence: false,
+      locale: exposeC ? (args.locale ?? null) : null,
+      topic: exposeC ? (canon.topic ?? null) : null,
+    });
+    await streamTokens(canon.response, args.emit, env);
+    return;
+  }
 
   const locales = args.locales && args.locales.length > 0 ? args.locales : undefined;
   const cosimi = createCosimi({ sql, embedder: resolveEmbedder() });

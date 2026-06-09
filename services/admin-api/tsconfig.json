@@ -1,0 +1,4 @@
+{
+  "extends": "@8budev/tsconfig/node.json",
+  "include": ["src", "test"]
+}

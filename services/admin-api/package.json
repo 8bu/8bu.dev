@@ -1,0 +1,40 @@
+{
+  "name": "@8budev/admin-api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "start": "tsx --env-file=../../.env src/index.ts",
+    "start:neon": "tsx --env-file=../../.env.neon src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@cosimi/adapter-embed-ollama": "^0.1.0",
+    "@cosimi/adapter-llm-anthropic": "^0.1.0",
+    "@cosimi/adapter-postgres": "^0.1.0",
+    "@cosimi/adapter-storage": "^0.1.0",
+    "@cosimi/core": "^0.1.0",
+    "@cosimi/logger": "^0.1.0",
+    "@cosimi/normalizer": "^0.1.0",
+    "@cosimi/sdk": "^0.1.0",
+    "@hono/node-server": "^1.19.0",
+    "hono": "^4.10.0",
+    "pino": "^10.0.0",
+    "valibot": "^1.0.0"
+  },
+  "devDependencies": {
+    "@8budev/db": "workspace:*",
+    "@8budev/tsconfig": "workspace:*",
+    "@cosimi/adapter-embed-fake": "^0.1.0",
+    "@cosimi/adapter-llm-fake": "^0.1.0",
+    "@cosimi/db-core": "^0.1.0",
+    "@types/node": "^22.0.0",
+    "postgres": "^3.4.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

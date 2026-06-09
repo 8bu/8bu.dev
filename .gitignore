@@ -11,3 +11,7 @@ dist
 .DS_Store
 coverage
 docs/superpowers
+
+# admin-api local ingest blob storage
+services/admin-api/.storage
+.env.neon

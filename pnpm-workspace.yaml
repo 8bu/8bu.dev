@@ -7,6 +7,7 @@ packages:
 # build scripts blocked. Add entries deliberately — each is permission to run
 # arbitrary code at install time.
 allowBuilds:
+  "@swc/core": true # neolab's @vitejs/plugin-react-swc needs the swc native binary
   esbuild: true # tsx ships esbuild and needs its native-binary postinstall
   sharp: false # transitive of wrangler; nothing on our path does image processing (og PNGs use resvg). Deny.
   workerd: false # wrangler's local-dev runtime; deploy/dry-run bundle via esbuild and never need it. Flip to true only for `wrangler dev`.
