@@ -10,7 +10,7 @@ Migrating live production codebases is where I'm deepest. I led the Nuxt 2 to Nu
 
 ## Architecture and direction
 
-At WegoPro I designed a modular monolith frontend architecture that the team adopted, and I owned frontend technical direction and best practices. Holding the architectural line over a long stretch is what makes a migration actually finish - someone has to keep saying no to shortcuts that break the boundaries.
+At WegoPro I designed a modular monolith architecture for the web platform that the team adopted, and I owned technical direction and best practices. Holding the architectural line over a long stretch is what makes a migration actually finish - someone has to keep saying no to shortcuts that break the boundaries.
 
 ## Mentoring and review
 

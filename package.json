@@ -14,7 +14,7 @@
     "db:down": "docker compose -f docker-compose.dev.yml down",
     "db:reset": "docker compose -f docker-compose.dev.yml down -v && pnpm db:up",
     "migrate": "tsx --env-file=.env packages/db/src/migrate.ts up",
-    "seed": "tsx --env-file=.env packages/db/src/scripts/seed.ts seeds/portf/*.yaml --locale=en",
+    "seed": "tsx --env-file=.env packages/db/src/scripts/seed.ts seeds/interview.yaml --locale=en",
     "deploy": "bash deploy.sh"
   },
   "devDependencies": {

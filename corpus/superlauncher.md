@@ -3,7 +3,7 @@ title: SuperLauncher
 topic: portfolio/artifact/superlauncher
 ---
 
-SuperLauncher is an IDO, staking, and marketplace blockchain platform. An IDO is an Initial DEX Offering - SuperLauncher was an IDO launchpad. I was a core front-end member from day zero, at BlockDevs, with the project running Feb 2020 to Jan 2022.
+SuperLauncher is an IDO, staking, and marketplace blockchain platform. An IDO is an Initial DEX Offering - SuperLauncher was an IDO launchpad. I was a core web developer from day zero, at BlockDevs, with the project running Feb 2020 to Jan 2022.
 
 ## What I shipped
 

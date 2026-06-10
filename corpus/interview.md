@@ -7,7 +7,7 @@ A few things an interviewer asks that aren't on my CV - what I'm after next, and
 
 ## What I'm looking for next
 
-I finish at WegoPro in April 2026 and take a short break to build Cosimi before my next role. What I want next is a senior frontend role where I own technical direction and work on the product rather than a ticket queue - Vue/Nuxt or React/Next, on a team that takes craft and migrations seriously. I'm open to early conversations now.
+I finish at WegoPro in April 2026 and take a short break to build Cosimi before my next role. What I want next is a senior software engineering role - fullstack, web-centered - where I own technical direction and work on the product rather than a ticket queue. TypeScript across the stack, Vue/Nuxt or React/Next on the client, on a team that takes craft and migrations seriously. I'm open to early conversations now.
 
 ## How I approach a new codebase
 

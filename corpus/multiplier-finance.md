@@ -3,11 +3,11 @@ title: Multiplier.finance
 topic: portfolio/artifact/multiplier-finance
 ---
 
-Multiplier.finance is a multi-chain DeFi liquidity protocol - AAVE-style lending across chains. It was formerly called PawnHub. I led the frontend during my time at BlockDevs, 2019-2022.
+Multiplier.finance is a multi-chain DeFi liquidity protocol - AAVE-style lending across chains. It was formerly called PawnHub. I led the web app during my time at BlockDevs, 2019-2022.
 
 ## What I shipped
 
-Front-end on a multi-chain liquidity protocol, AAVE-style lending across chains. I developed the core features: lending, wallet integration, and staking.
+The web app for a multi-chain liquidity protocol, AAVE-style lending across chains. I developed the core features: lending, wallet integration, and staking.
 
 ## The migration
 

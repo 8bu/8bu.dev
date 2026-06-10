@@ -10,7 +10,7 @@ I'm a Senior Web Developer with 10+ years of professional experience. I work in 
 
 I'm 30, born in 1996. Old enough to have struggled with IE6 polyfills early on, young enough to still write Vue 3 every day. I'm a Ho Chi Minh City native - born and raised, still based here, on GMT+7.
 
-I got into coding through the vBulletin forum trend. That's where I picked up basic JS and PHP. I loved doing the UI, so I went HTML, JS, and CSS all the way and stayed frontend.
+I got into coding through the vBulletin forum trend. That's where I picked up basic JS and PHP. I loved doing the UI, so I went HTML, JS, and CSS all the way and made the web my home - these days that reaches across the whole stack.
 
 I studied Computational and Applied Mathematics at Ton Duc Thang University in HCMC from 2013 to 2016. I left in my third year - my family was in heavy debt and I couldn't focus on studies, so I left to work. No degree.
 

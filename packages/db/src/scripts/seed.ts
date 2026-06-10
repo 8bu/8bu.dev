@@ -11,7 +11,8 @@ type Pair = { input: string; response: string; topic?: string };
 
 const VALID_SOURCES = new Set<Source>(["seed", "user", "chat", "llm"]);
 
-// portf seeds are all yaml-flat lists; json/jsonl supported for convenience.
+// seeds/interview.yaml is a topic-keyed map of pair lists; flat yaml lists and
+// json/jsonl remain supported for convenience.
 function detect(file: string): "json" | "jsonl" | "yaml-flat" {
   const ext = extname(file).toLowerCase();
   if (ext === ".json") return "json";
@@ -35,8 +36,12 @@ function parseJsonl(text: string): Pair[] {
 
 function parseYamlFlat(text: string): Pair[] {
   const data = parseYaml(text);
-  if (!Array.isArray(data)) throw new Error("expected top-level YAML list");
-  return data as Pair[];
+  if (Array.isArray(data)) return data as Pair[];
+  if (data && typeof data === "object") {
+    // topic-keyed map of lists (seeds/interview.yaml shape)
+    return Object.values(data as Record<string, Pair[]>).flat();
+  }
+  throw new Error("expected top-level YAML list or map of lists");
 }
 
 async function loadFile(file: string): Promise<Pair[]> {

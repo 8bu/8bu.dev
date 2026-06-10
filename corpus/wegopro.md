@@ -15,7 +15,7 @@ I led the Nuxt 2 to Nuxt 4 migration using Vue 3 web components as the bridge la
 
 ## How I worked
 
-I designed a modular monolith frontend architecture that the team adopted. I owned technical direction and best practices for the frontend team, led the code review process, and mentored teammates on Vue 3 patterns. I worked closely with design and PM to turn specs into shipped features, and handled production issues and quick fixes when things broke.
+I designed a modular monolith architecture for the web platform that the team adopted. I owned technical direction and best practices for the web team, led the code review process, and mentored teammates on Vue 3 patterns. I worked closely with design and PM to turn specs into shipped features, and handled production issues and quick fixes when things broke.
 
 ## Stack
 

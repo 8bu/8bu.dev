@@ -13,7 +13,7 @@ pnpm migrate
 # Seed only when pairs is empty (idempotent dev convenience).
 count=$(docker exec portf-postgres psql -U postgres -d portf -tAc "SELECT count(*) FROM pairs" 2>/dev/null || echo 0)
 if [ "${count// /}" = "0" ]; then
-  echo "seeding portf pairs…"
+  echo "seeding interview pairs…"
   pnpm seed
 fi
 

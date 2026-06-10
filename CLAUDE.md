@@ -26,7 +26,6 @@ packages/db/       @8budev/db    — postgres adapter, migrations + idempotent m
 packages/logger/   @8budev/logger— pino + redactInput, lazy/Workers-safe
 corpus/*.md        long-form source docs → ingested into documents/chunks/pairs
 seeds/interview.yaml             — document-less curated Q&A (source='seed')
-seeds/portf/*.yaml               — legacy portfolio seed pairs
 ```
 
 Tech: Node 22 · pnpm 11 · Turbo 2 · TS 5.7 · Hono · postgres.js · Postgres 16 +
@@ -52,7 +51,7 @@ pnpm --filter @8budev/api exec vitest run -t "deflect"   # by name
 
 # DB:
 pnpm migrate            # apply migrations (idempotent, tracked in _migrations)
-pnpm seed               # seed seeds/portf/*.yaml into local PG
+pnpm seed               # seed seeds/interview.yaml into local PG
 pnpm db:reset           # nuke volume + re-up
 ```
 
