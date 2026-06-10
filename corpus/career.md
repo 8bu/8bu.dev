@@ -12,7 +12,7 @@ In 2016 I joined Letterink, an agency/studio in HCMC, as a Web Developer. I mana
 
 Late 2017 I moved to Motorist.sg, a Singapore-based SaaS company, working remote from HCMC. I built the new company landing page and back-office platform and led the platform migration to Nuxt.js v2. That was my first Nuxt experience.
 
-From June 2019 to January 2022 I was Web Developer at BlockDevs in HCMC, working on DeFi - Multiplier.finance and SuperLauncher. There I also led onboarding and mentoring, ran code reviews, and conducted technical interviews for recruitment.
+From June 2019 to January 2022 I was Web/Web3 Developer at BlockDevs in HCMC, working on DeFi - Multiplier.finance and SuperLauncher. I owned everything outside the smart contracts: the Node.js/Express backends, the web apps, and the integration between them - REST/RPC APIs, auth and sessions, PostgreSQL schemas and queries, and The Graph subgraphs with GraphQL for on-chain indexing. I also led onboarding and mentoring, ran code reviews, and conducted technical interviews for recruitment.
 
 ## Current role
 

@@ -14,7 +14,7 @@ Tailwind across WegoPro, Multiplier, and SuperLauncher. SCSS across the resume. 
 
 ## Backend and infra
 
-Nest, Express, and Hono - I'm using Hono in Cosimi, deployed on a Cloudflare Worker. On infrastructure I've worked AWS via the Serverless framework at WegoPro, Cloudflare, and Stripe.
+Nest, Express, and Hono - I'm using Hono in Cosimi, deployed on a Cloudflare Worker. Express goes back to the BlockDevs years, where I built the DeFi backends: REST/RPC APIs, auth and sessions, PostgreSQL schemas and queries, and The Graph subgraphs with GraphQL for on-chain indexing. On infrastructure I've worked AWS via the Serverless framework at WegoPro - self-managed serverless deployments - plus Cloudflare, and Stripe for billing.
 
 ## Data and AI
 

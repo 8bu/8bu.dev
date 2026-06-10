@@ -7,11 +7,11 @@ WegoPro is a B2B corporate travel and expense platform, formerly called Travelst
 
 ## What I shipped
 
-Four years building B2B corporate travel and expense at scale. I led the shipping of recent bookings, policy change indicators, hierarchy approvals, custom fields, the onboarding flow, and the entire back-office dashboard.
+Four years building B2B corporate travel and expense at scale. I led the shipping of recent bookings, policy change indicators, hierarchy approvals, custom fields, the onboarding flow, and the entire back-office dashboard. I integrated Stripe billing and the transactional email + i18n pipeline (EJS/ETA templates with Phrase), and owned end-to-end delivery including self-managed AWS serverless deployments.
 
 ## The migration
 
-I led the Nuxt 2 to Nuxt 4 migration using Vue 3 web components as the bridge layer. The main web app moved toward a Vue 3 SPA. I solo-migrated the back-office dashboard to Nuxt 4 + Nuxt UI. This is the work I'm proudest of - pulling off a migration on a live B2B platform without halting feature work.
+I led the Nuxt 2 to Nuxt 4 migration as a Strangler Fig: a parallel Vue 3 + Vite app shipped as web components into the legacy host shell, feature by feature. The main web app moved toward a Vue 3 SPA. I solo-migrated the back-office dashboard to Nuxt 4 + Nuxt UI. This is the work I'm proudest of - pulling off a migration on a live B2B platform without halting feature work.
 
 ## How I worked
 

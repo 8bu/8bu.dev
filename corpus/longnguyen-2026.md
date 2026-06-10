@@ -7,7 +7,7 @@ I'm Long Nguyễn - a product-minded Software Developer with 10+ years building 
 
 ## Experience
 
-WegoPro, 2022-2026 - Web Developer on B2B travel and expense, remote. BlockDevs, 2019-2022 - Web Developer in DeFi, HCMC. Motorist.sg, 2017-2019 - Web Developer in SaaS, Singapore company, remote from HCMC. Letterink, 2016-2017 - Web Developer at an agency/studio in HCMC. Freelance, 2013-2016 - Web Developer doing WordPress, custom CMS, and landing pages.
+WegoPro, 2022-2026 - Senior Web Developer on B2B travel and expense, remote. BlockDevs, 2019-2022 - Web/Web3 Developer in DeFi, HCMC, owning everything outside the smart contracts: Express backends, PostgreSQL, The Graph subgraphs, and the web apps. Motorist.sg, 2017-2019 - Web Developer in SaaS, Singapore company, remote from HCMC. Letterink, 2016-2017 - Web Developer at an agency/studio in HCMC. Freelance, 2013-2016 - Web Developer doing WordPress, custom CMS, and landing pages.
 
 ## Selected projects
 
@@ -15,7 +15,7 @@ WegoPro, Multiplier.finance, SuperLauncher, Motorist.sg, Letterink. The marquee 
 
 ## Stack
 
-TypeScript, Vue/Nuxt, React/Next, Tailwind, SCSS, Pinia/Vuex, Web3.js / Ethers. Fullstack and AI: Hono on Cloudflare Workers, Postgres + pgvector, GraphRAG, the Anthropic Claude SDK.
+TypeScript, Vue/Nuxt, React/Next, Tailwind, SCSS, Pinia/Vuex, Web3.js / Ethers. Backend: Node (Express, Nest, Hono), PostgreSQL, GraphQL + The Graph. Fullstack and AI: Hono on Cloudflare Workers, Postgres + pgvector, GraphRAG, the Anthropic Claude SDK.
 
 ## AI workflow
 
@@ -23,7 +23,7 @@ Claude Code, Codex, Cursor, OpenCode, Ollama, LMStudio.
 
 ## Education
 
-Ton Duc Thang University, HCMC - Computational and Applied Math, 2013-16. I left in my third year.
+Ton Duc Thang University, HCMC - Computational and Applied Math, 2014-16. I left in my third year.
 
 ## Languages
 
