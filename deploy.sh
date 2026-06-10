@@ -35,9 +35,11 @@ deploy_web_pages() {
   print_info "Building @8budev/web…"
   pnpm --filter @8budev/web build
   print_info "Deploying web → Pages (portf project → 8bu.dev)…"
-  # TanStack Start prerender output lives in dist/client.
+  # TanStack Start prerender output lives in dist/client. Absolute path: $WRANGLER
+  # runs from services/api (pnpm --filter), so a relative path resolves wrong
+  # under wrangler v4.
   # shellcheck disable=SC2086
-  $WRANGLER pages deploy apps/web/dist/client --project-name portf --branch production
+  $WRANGLER pages deploy "$(pwd)/apps/web/dist/client" --project-name portf --branch production
   print_success "web Pages deployed."
 }
 
