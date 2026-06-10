@@ -4,7 +4,7 @@ title: Who I am
 
 I'm Long. Full name Nguyễn Hoàng Vân Long - Long is the given name. Online I go by 8bu, offline just Long. The handle means "8-bit user". One byte doesn't sound as cool, and 8 bits feels atomic to me - the smallest unit that means something. It fits how I learn: take something complex and reduce it to its simplest form.
 
-I'm a Senior Web Developer with 10+ years of professional experience. I work in Vue/Nuxt, React/Next, and TypeScript, shipping production web apps across SaaS, DeFi, and design systems. My first paid work was freelance in March 2013, and I've been full-time since 2016. Right now I'm four years into a role at WegoPro, a B2B corporate travel and expense platform.
+I'm a Senior Web Developer with 10+ years of professional experience. I work in Vue/Nuxt, React/Next, and TypeScript, shipping production web apps across SaaS, DeFi, and design systems. My first paid work was freelance in March 2013, and I've been full-time since 2016. Most recently I spent four years at WegoPro, a B2B corporate travel and expense platform, through April 2026.
 
 ## Background and origin
 

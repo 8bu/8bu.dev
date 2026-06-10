@@ -18,4 +18,4 @@ I modernize legacy codebases without stalling delivery, own technical direction,
 
 ## Availability
 
-I'm finishing at WegoPro in April 2026 and planning a roughly two-month break before my next role - during it I'll build Cosimi. A realistic start date is around July 2026. I'm open to early conversations now. Reach me at hvanlong@pm.me or linkedin.com/in/8bu.
+I finished at WegoPro in April 2026 and I'm on a roughly two-month break before my next role - building Cosimi during it. A realistic start date is around July 2026. I'm open to conversations now. Reach me at hvanlong@pm.me or linkedin.com/in/8bu.

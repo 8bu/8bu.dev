@@ -15,7 +15,7 @@ In Cosimi the LLM still does almost all the labor, but offline, before anyone is
 
 ## Generation isn't the enemy
 
-The trust comes from the boundary, not the byline. An earlier version hand-wrote every reply and I told myself the honesty came from the hand-craft - that's false and it doesn't scale. A model generating answers from my own source, checked by another model, frozen before it can reach anyone, isn't a hallucination risk - it's a build artifact. The same generative capability that's reckless live is just productive labor offline, because the ingest path has grounding, audit, and a human who can read the output first. What I own isn't the corpus (the model builds that) - it's the source it's grounded on, the audit gate, and the small hand-written canonical layer for questions I want answered exactly.
+The trust comes from the boundary, not the byline. An earlier version hand-wrote every reply and I told myself the honesty came from the hand-craft - that's false and it doesn't scale. A model generating answers from my own source, checked by another model, frozen before it can reach anyone, isn't a hallucination risk - it's a build artifact. The same generative capability that's reckless live is just productive labor offline, because the ingest path has grounding, audit, and a human who can read the output first. What I own isn't the corpus (the model builds that) - it's the source it's grounded on, the audit gate, and the small set of hand-written seed answers for questions I want answered exactly.
 
 ## The design law
 

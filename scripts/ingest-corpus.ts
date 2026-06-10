@@ -21,9 +21,9 @@ const KEY = process.env.ANTHROPIC_API_KEY;
 
 // Excluded from the vector corpus: their conversationally-phrased generated pairs
 // out-rank factual pairs on conversational queries (deep-tested — they hijacked
-// "tell me about wegopro" / "why hire you"). Greetings live in
-// services/api/src/canonical.ts; off-limits questions fall through to the FE
-// fallback. Files kept.
+// "tell me about wegopro" / "why hire you"). Greetings live as seed pairs
+// (seeds/interview.yaml); off-limits questions are caught by the tier-0 deflect
+// guard or fall through to the FE fallback. Files kept.
 const SKIP = new Set(["deflections", "smalltalk"]);
 
 function parseFrontmatter(

@@ -3,7 +3,7 @@ title: WegoPro
 topic: portfolio/artifact/wegopro
 ---
 
-WegoPro is a B2B corporate travel and expense platform, formerly called Travelstop. I've been there as a Web Developer for four years - March 2022 to April 2026 - fully remote. It's my longest tenure.
+WegoPro is a B2B corporate travel and expense platform, formerly called Travelstop. I was there as a Senior Web Developer for four years - March 2022 to April 2026, ending as acting Lead Web Developer - fully remote. It's my longest tenure.
 
 ## What I shipped
 
