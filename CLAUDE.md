@@ -139,9 +139,10 @@ Manual, all-Cloudflare: `pnpm deploy` (interactive menu in `deploy.sh`). Pages
 project `portf` → `8bu.dev`; Worker `portf-api` (route `8bu.dev/api/*`) → Hyperdrive
 `portf-hd-vps` (`41297ec8…`) → Access app `db` (`db.8bu.dev`) → cloudflared tunnel
 `portal-db` → **VPS Postgres** (`ssh 71z`, bare-metal PG16, db `portf`, role
-`portf_app`). The DB moved off Neon 2026-07-11; the old Neon Hyperdrive
-`portf-hd` (`7994710a…`) is kept intact as rollback (swap the id in
-`services/api/wrangler.toml` + redeploy). **Migrate the VPS DB before deploying
+`portf_app`). The DB moved off Neon 2026-07-11 and **Neon was fully decommissioned**
+that day — the VPS is now the sole source of truth. Disaster recovery = the cold
+dump at `71z:/root/neon-final-backup-2026-07-11/portf.dump` (all four ex-Neon DBs
+backed up there). **Migrate the VPS DB before deploying
 the Worker** when a release adds migrations — the DB is localhost-only, so reach
 it over an SSH tunnel (`ssh -L 5433:localhost:5432 71z`) and point the migrate CLI
 at `postgresql://portf_app:…@localhost:5433/portf`.

@@ -10,7 +10,8 @@ routes = [{ pattern = "8bu.dev/api/*", zone_name = "8bu.dev" }]
 [[env.portf.hyperdrive]]
 binding = "HYPERDRIVE"
 # VPS Postgres (portf) via cloudflared tunnel db.8bu.dev + Access service token.
-# Rollback to Neon: id = "7994710a22e94e3fab65ac8deaa79a59" (portf-hd, kept intact).
+# Sole source of truth — Neon was decommissioned 2026-07-11. Disaster recovery =
+# cold dump at 71z:/root/neon-final-backup-2026-07-11/portf.dump.
 id = "41297ec8871b4cd28c77245a85cc7834"
 
 # Workers-AI binding — the prod embedder (bge-m3) reads it via runWithAi.
