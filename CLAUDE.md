@@ -30,7 +30,8 @@ seeds/interview.yaml             — document-less curated Q&A (source='seed')
 
 Tech: Node 22 · pnpm 11 · Turbo 2 · TS 5.7 · Hono · postgres.js · Postgres 16 +
 **pgvector** · valibot · pino · oxlint/oxfmt · vitest · Vite 7 · TanStack
-Start/Router · Tailwind v4 · Cloudflare Pages + Workers + Hyperdrive + Neon.
+Start/Router · Tailwind v4 · Cloudflare Pages + Workers + Hyperdrive → VPS Postgres
+(prod DB self-hosted via cloudflared tunnel; migrated off Neon 2026-07-11).
 
 ## Commands
 
@@ -136,5 +137,11 @@ self-hosted reaction mp4, `image` to `/media/img/<slug>.webp`.
 
 Manual, all-Cloudflare: `pnpm deploy` (interactive menu in `deploy.sh`). Pages
 project `portf` → `8bu.dev`; Worker `portf-api` (route `8bu.dev/api/*`) → Hyperdrive
-`portf-hd` → Neon `portf`. **Migrate Neon before deploying the Worker** when a
-release adds migrations.
+`portf-hd-vps` (`41297ec8…`) → Access app `db` (`db.8bu.dev`) → cloudflared tunnel
+`portal-db` → **VPS Postgres** (`ssh 71z`, bare-metal PG16, db `portf`, role
+`portf_app`). The DB moved off Neon 2026-07-11; the old Neon Hyperdrive
+`portf-hd` (`7994710a…`) is kept intact as rollback (swap the id in
+`services/api/wrangler.toml` + redeploy). **Migrate the VPS DB before deploying
+the Worker** when a release adds migrations — the DB is localhost-only, so reach
+it over an SSH tunnel (`ssh -L 5433:localhost:5432 71z`) and point the migrate CLI
+at `postgresql://portf_app:…@localhost:5433/portf`.

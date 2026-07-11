@@ -60,10 +60,13 @@ deploy_all() {
 }
 
 run_migration() {
-  # The live Neon `portf` DB already has 001-004/010 applied; this should be a
-  # no-op (all skipped). URL pasted hidden — never persisted to disk.
+  # The prod `portf` DB (VPS Postgres, moved off Neon 2026-07-11) already has all
+  # migrations applied; this should be a no-op (all skipped). The VPS DB is
+  # localhost-only — open a tunnel first (`ssh -L 5433:localhost:5432 71z`) and
+  # paste postgresql://portf_app:…@localhost:5433/portf. URL pasted hidden — never
+  # persisted to disk.
   local db_url
-  print_info "Paste the Neon DIRECT (non-pooled) URL for the portf DB (input hidden):"
+  print_info "Paste the DIRECT URL for the portf DB (VPS via SSH tunnel; input hidden):"
   read -rsp "  portf DATABASE_URL: " db_url; printf '\n'
   if [[ -z "$db_url" ]]; then print_error "Empty URL — aborting."; return 1; fi
   print_info "Running migrations against portf…"
@@ -81,7 +84,7 @@ status() {
 menu() {
   cat <<'MENU'
 
-8bu.dev deploy - Cloudflare + Neon (manual)
+8bu.dev deploy - Cloudflare + VPS Postgres (manual)
   2) Deploy web      → Pages (portf → 8bu.dev)
   4) Deploy portf-api → Worker (env.portf, route 8bu.dev/api/*)
   6) Deploy ALL (gates → 2,4)
