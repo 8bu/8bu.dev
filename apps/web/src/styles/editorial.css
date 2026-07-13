@@ -566,7 +566,10 @@
   color: var(--ed-coral-soft);
   margin-bottom: 20px;
 }
-.ed-contact__email {
+/* `.ed a` (0,1,1) would otherwise beat a bare `.ed-contact__email` (0,1,0) and
+   paint the email ink-blue on the blue contact panel — invisible. Raise
+   specificity with the element+class compound. */
+.ed-contact a.ed-contact__email {
   position: relative;
   display: inline-block;
   font-family: var(--ed-serif);
@@ -575,7 +578,7 @@
   border-bottom: 2px solid var(--ed-coral);
   line-height: 1.2;
 }
-.ed-contact__email:hover {
+.ed-contact a.ed-contact__email:hover {
   color: var(--ed-coral);
 }
 .ed-contact__links {
