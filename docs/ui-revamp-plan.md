@@ -44,22 +44,35 @@ prototype. Produced via a grilling / domain-modeling session. See
   screenshots).
 - **Q-E · `apps/neolab`** → **out of scope**.
 
-## Phased sequence (single branch)
+## Phased sequence (single branch `feat/editorial-redesign`)
 
-1. **Foundation** — new global stylesheet + editorial palette + fonts; strip
-   `data-theme`, device-frame, theme preference. Establish semantic class base.
-2. **Editorial home** — Hero (misregistration name, vertical rail; no marquee),
-   Selected Work (hover-expand rows), About, Writing, Stack, Contact. Bind to
-   real data (P1). Replaces `HomePane`.
-3. **Ask route** — re-skin `/chat` to the prototype's threads-rail + single
+1. ✅ **Foundation** (commit 41c5230) — editorial stylesheet scoped under `.ed`
+   + fixed palette + Newsreader/Space Grotesk fonts; `PortfShell` full-bleed on
+   `/`. NON-destructive: legacy `data-theme` / device-frame kept for now (moved
+   to phase 5 so nothing breaks mid-migration).
+2. ✅ **Editorial home** (commit 41c5230) — Hero (misregistration name, vertical
+   rail; no marquee), Selected Work (hover-expand rows), About, Writing, Stack,
+   Contact. Bound to real data (P1). Replaces `HomePane` at `/`. 278/278 tests
+   pass; `/` prerenders clean.
+3. ⏳ **Ask route** — re-skin `/chat` to the prototype's threads-rail + single
    column; reuse `streamChat` / stores / `ChatComposer` / `ChatChips`
-   unchanged; nav + ⌘K/`/`/ESC wiring.
-4. **Artifacts** — re-skin standalone `/artifact/$kind/$slug` + `/artifacts`
+   unchanged; ESC-to-home wiring. **Needs owner visual review of the new chat
+   aesthetic** — left for return.
+4. ⏳ **Artifacts** — re-skin standalone `/artifact/$kind/$slug` + `/artifacts`
    index editorial; remove split-pane; retarget `match.ts` deep-links.
-5. **Teardown** — delete `portfolio.css` theme/frame/wireframe blocks, dead
-   Wordmark variants, unused tokens.
-6. **Tests + gates** — rewrite/prune tests; run `pnpm -r typecheck`, `pnpm lint`,
+5. ⏳ **Teardown** — delete `portfolio.css` theme/frame/wireframe blocks + the
+   `data-theme` attribute + theme preference; remove now-dead HomePane / ChipRow
+   / Composer / SpotlightHeadline / use-sampled-chips and their tests; the
+   `.ed`-scoping can then relax to global.
+6. ⏳ **Tests + gates** — final pass: `pnpm -r typecheck`, `pnpm lint`,
    `pnpm format:check`, `pnpm -r --workspace-concurrency=1 test`.
+
+### Intermediate-state note
+
+Phases 1–2 leave the branch in a deliberate mixed state: the editorial home is
+live at `/`, but `/chat` + `/artifacts` still render in the old `press` theme +
+device frame. That is fine on a feature branch (each commit compiles + tests
+green) but is **not deploy-ready** until phases 3–5 unify the look.
 
 ## Blast radius (files touching removed tokens/theme)
 
