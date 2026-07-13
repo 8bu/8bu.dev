@@ -5,6 +5,12 @@ import { ChatShell } from "@/components/ChatShell";
 const GOOGLE_FONTS_HREF =
   "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Caveat:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=Silkscreen:wght@400;700&family=Press+Start+2P&display=swap";
 
+// Editorial redesign fonts (ADR-0002): Newsreader (serif display) + Space
+// Grotesk (sans). Loaded alongside the legacy families until the /chat +
+// /artifacts re-skin drops them.
+const EDITORIAL_FONTS_HREF =
+  "https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;600;700&display=swap";
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -21,6 +27,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: GOOGLE_FONTS_HREF },
+      { rel: "stylesheet", href: EDITORIAL_FONTS_HREF },
     ],
   }),
   component: RootDocument,

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HomePane } from "@/features/home/components/HomePane";
+import { EditorialHome } from "@/features/home/editorial/EditorialHome";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,5 +17,5 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "https://8bu.dev/" }],
   }),
-  component: HomePane,
+  component: EditorialHome,
 });
