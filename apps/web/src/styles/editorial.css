@@ -536,7 +536,11 @@
 }
 .ed-stack__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  /* Prototype uses minmax(210px,1fr); on the real (scrollbar-bearing) site that
+     is ~8px short of fitting all 6 groups on one row, wrapping the 6th to an
+     orphan row. 200px keeps the prototype's clean 6-across on desktop while
+     still wrapping gracefully on narrow viewports. */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   border-top: 1px solid var(--ed-ink);
   border-left: 1px solid var(--ed-ink);
 }
