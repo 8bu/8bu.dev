@@ -28,12 +28,12 @@ describe("useArtifactScrollRestore", () => {
   });
 
   it("persists scrollTop on scroll", async () => {
-    const el = await renderHarness("essay-x");
+    const el = await renderHarness("artifact-x");
     act(() => {
       el.scrollTop = 180;
       el.dispatchEvent(new Event("scroll"));
     });
-    expect(sessionStorage.getItem("portf.artifact-scroll.essay-x")).toBe("180");
+    expect(sessionStorage.getItem("portf.artifact-scroll.artifact-x")).toBe("180");
   });
 
   it("defaults to 0 when no stored value", async () => {

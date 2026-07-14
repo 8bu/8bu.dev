@@ -29,17 +29,21 @@ export default defineConfig({
         crawlLinks: true,
         autoStaticPathsDiscovery: true,
         failOnError: true,
-        // Drop binary assets (resume PDF reachable via descriptor.url).
-        filter: ({ path }) => !path.endsWith(".pdf"),
+        // Drop binary assets (resume PDF reachable via descriptor.url) and the
+        // deprecated /artifacts route, which is a beforeLoad redirect to "/"
+        // (nothing to prerender; a 301 is served at the edge via _redirects).
+        filter: ({ path }) => !path.endsWith(".pdf") && path !== "/artifacts",
       },
-      // Misc descriptors (cosimi-explainer, tools-ai-workflow, contact-coffee-chat)
-      // are chat-only by design — `apps/portf/src/features/artifacts-index/data.ts`
-      // excludes kind=misc from gallery rows, so crawlLinks cannot reach them.
-      // List them explicitly so they still emit prerendered HTML.
+      // Explicitly prerender artifacts that crawlLinks cannot reach:
+      //  - misc (cosimi-explainer, tools-ai-workflow, contact-coffee-chat) are
+      //    chat-only, never linked from a page.
+      //  - the résumé's only former link was the retired /artifacts gallery;
+      //    the home Contact now links straight to the PDF, so list it here.
       pages: [
         { path: "/artifact/misc/cosimi-explainer" },
         { path: "/artifact/misc/tools-ai-workflow" },
         { path: "/artifact/misc/contact-coffee-chat" },
+        { path: "/artifact/resume/longnguyen-2026" },
       ],
       sitemap: {
         enabled: true,

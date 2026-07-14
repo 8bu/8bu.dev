@@ -7,7 +7,7 @@ import * as v from "valibot";
  * The frontmatter MAY echo kind for editor self-documentation, but the
  * loader trusts the directory and throws on mismatch.
  */
-export type ArtifactKind = "projects" | "essays" | "resume" | "misc";
+export type ArtifactKind = "projects" | "resume" | "misc";
 
 /**
  * Frontmatter schema (valibot). What an MDX author writes inside ---...---.
@@ -26,7 +26,7 @@ export type ArtifactKind = "projects" | "essays" | "resume" | "misc";
  */
 export const FrontmatterSchema = v.object({
   slug: v.pipe(v.string(), v.minLength(1), v.regex(/^[a-z0-9-]+$/)),
-  kind: v.picklist(["projects", "essays", "resume", "misc"]),
+  kind: v.picklist(["projects", "resume", "misc"]),
   title: v.pipe(v.string(), v.minLength(1)),
   kicker: v.optional(v.string(), "open artifact"),
   period: v.string(),

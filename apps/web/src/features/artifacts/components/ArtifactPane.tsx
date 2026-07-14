@@ -2,11 +2,9 @@ import type { ReactNode } from "react";
 
 import { ArtifactPanel } from "@/features/artifacts/components/ArtifactPanel";
 import { ProjectBody } from "@/features/artifacts/components/bodies/ProjectBody";
-import { EssayBody } from "@/features/artifacts/components/bodies/EssayBody";
 import { CvBody } from "@/features/artifacts/components/bodies/CvBody";
 import { GenericBody } from "@/features/artifacts/components/bodies/GenericBody";
 import { ProjectAction } from "@/features/artifacts/components/actions/ProjectAction";
-import { EssayAction } from "@/features/artifacts/components/actions/EssayAction";
 import { CvAction } from "@/features/artifacts/components/actions/CvAction";
 import { useArtifactScrollRestore } from "@/features/artifacts/hooks/useArtifactScrollRestore";
 import { useCloseArtifact } from "@/features/artifacts/hooks/useCloseArtifact";
@@ -21,8 +19,6 @@ function kickerFor(d: ArtifactDescriptor): string {
   switch (d.kind) {
     case "projects":
       return `PORTFOLIO · ${d.title} · ${d.period}`;
-    case "essays":
-      return `ESSAY · ${d.period}`;
     case "resume":
       return `CV · ${d.title} · UPDATED ${d.period}`;
     case "misc":
@@ -34,8 +30,6 @@ function bodyFor(d: ArtifactDescriptor): ReactNode {
   switch (d.kind) {
     case "projects":
       return <ProjectBody descriptor={d} />;
-    case "essays":
-      return <EssayBody descriptor={d} />;
     case "resume":
       return <CvBody descriptor={d} />;
     case "misc":
@@ -47,8 +41,6 @@ function actionFor(d: ArtifactDescriptor): ReactNode {
   switch (d.kind) {
     case "projects":
       return <ProjectAction descriptor={d} />;
-    case "essays":
-      return <EssayAction />;
     case "resume":
       return <CvAction descriptor={d} />;
     case "misc":

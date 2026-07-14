@@ -26,16 +26,16 @@ describe("catalog", () => {
           matchPatterns: ["sample"],
         },
       },
-      "../../artifacts/__fixtures__/essays/sample-essay.mdx": {
+      "../../artifacts/__fixtures__/misc/sample-misc.mdx": {
         default: () => null,
         frontmatter: {
-          slug: "sample-essay",
-          kind: "essays",
-          title: "A Sample Essay",
+          slug: "sample-misc",
+          kind: "misc",
+          title: "A Sample Misc",
           period: "2026",
           stack: [],
           summary: "Fixture",
-          matchPatterns: ["essay"],
+          matchPatterns: ["sample-misc"],
         },
       },
     };
@@ -46,7 +46,7 @@ describe("catalog", () => {
     const sp: ArtifactDescriptor | undefined = catalog.get("sample-project");
     expect(sp?.title).toBe("Sample Project");
     expect(sp?.kind).toBe("projects");
-    expect(catalog.get("sample-essay")?.kind).toBe("essays");
+    expect(catalog.get("sample-misc")?.kind).toBe("misc");
     // Defaults applied:
     expect(sp?.kicker).toBe("open artifact");
     expect(sp?.locale).toBe("en");
@@ -205,8 +205,8 @@ describe("optional url field", () => {
     const mod = {
       default: () => null,
       frontmatter: {
-        slug: "essay-1",
-        kind: "essays",
+        slug: "misc-1",
+        kind: "misc",
         title: "E",
         period: "2026",
         stack: [],
@@ -214,8 +214,8 @@ describe("optional url field", () => {
         matchPatterns: ["xx"],
       },
     };
-    const catalog = _buildCatalog({ "/p/artifacts/essays/e.mdx": mod });
-    expect(catalog.get("essay-1")?.url).toBeUndefined();
+    const catalog = _buildCatalog({ "/p/artifacts/misc/e.mdx": mod });
+    expect(catalog.get("misc-1")?.url).toBeUndefined();
   });
 });
 
@@ -244,8 +244,8 @@ describe("optional repo field", () => {
     const mod = {
       default: () => null,
       frontmatter: {
-        slug: "essay-2",
-        kind: "essays",
+        slug: "misc-2",
+        kind: "misc",
         title: "E",
         period: "2026",
         stack: [],
@@ -253,8 +253,8 @@ describe("optional repo field", () => {
         matchPatterns: ["xx"],
       },
     };
-    const catalog = _buildCatalog({ "/p/artifacts/essays/e2.mdx": mod });
-    expect(catalog.get("essay-2")?.repo).toBeUndefined();
+    const catalog = _buildCatalog({ "/p/artifacts/misc/e2.mdx": mod });
+    expect(catalog.get("misc-2")?.repo).toBeUndefined();
   });
 });
 

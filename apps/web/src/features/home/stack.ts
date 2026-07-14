@@ -2,7 +2,7 @@
  * Stack "type-case" content for the editorial home.
  *
  * The one home section with no existing data source (Work ← projects catalog,
- * Writing ← essays catalog, Contact CV ← resume). Ported from the
+ * Writing ← Substack, Contact CV ← resume). Ported from the
  * `8bu Portfolio.dc.html` prototype's `stacks` array. Static by design — this
  * is authored content, not derived from the corpus.
  */

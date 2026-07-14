@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { useUiStore } from "@/store/ui";
 import { Wordmark } from "@/components/Wordmark";
 import { NewChatButton } from "@/features/sidebar/components/NewChatButton";
-import { ArtifactsNavItem } from "@/features/sidebar/components/ArtifactsNavItem";
 import { ThreadList } from "@/features/sidebar/components/ThreadList";
 
 /**
@@ -48,8 +47,6 @@ export function Sidebar() {
           <span className="v1-home-hint">← home</span>
         </Link>
         <NewChatButton />
-        <div className="v1-section-label">Resources</div>
-        <ArtifactsNavItem />
         <ThreadList />
 
         <div

@@ -68,7 +68,7 @@ describe("/artifact/$kind/$slug route", () => {
     const { Route } = await import("@/routes/artifact.$kind.$slug");
     expect(() =>
       (Route as unknown as { loader: (a: unknown) => unknown }).loader({
-        params: { kind: "essays", slug: "wegopro" },
+        params: { kind: "resume", slug: "wegopro" },
       }),
     ).toThrow();
   });

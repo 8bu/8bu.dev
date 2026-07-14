@@ -1,11 +1,8 @@
 import { useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  projectsForGallery,
-  essaysForGallery,
-  resumeForGallery,
-} from "@/features/artifacts-index/data";
+import { projectsForGallery, resumeForGallery } from "@/features/artifacts-index/data";
 import { STACK_GROUPS } from "@/features/home/stack";
+import { WRITING_POSTS, SUBSTACK_URL } from "@/features/home/writing.data";
 import { useReveal, useAskShortcuts } from "./hooks";
 
 const YEAR = new Date().getFullYear();
@@ -184,20 +181,31 @@ function About() {
   );
 }
 
+/** Writing ← Substack (fetched at build into writing.data.ts). Titles link out
+ *  to the post; the section-head links to the publication. Hidden if empty. */
 function Writing() {
-  const essays = essaysForGallery();
+  if (WRITING_POSTS.length === 0) return null;
   return (
     <section id="writing" className="ed-section">
       <div className="ed-section-head" data-reveal>
         <h2>Writing</h2>
-        <span className="ed-section-head__meta">NOTES — IN PROGRESS</span>
+        <a className="ed-section-head__meta" href={SUBSTACK_URL} target="_blank" rel="noopener">
+          ON SUBSTACK ↗
+        </a>
       </div>
-      {essays.map((e) => (
-        <Link key={e.slug} to={e.href} className="ed-writing-row" data-reveal>
-          <span className="ed-writing-row__tag">NOTE</span>
-          <span className="ed-writing-row__title">{e.title}</span>
-          <span className="ed-writing-row__date">{e.meta}</span>
-        </Link>
+      {WRITING_POSTS.map((p) => (
+        <a
+          key={p.url}
+          href={p.url}
+          target="_blank"
+          rel="noopener"
+          className="ed-writing-row"
+          data-reveal
+        >
+          <span className="ed-writing-row__tag">POST</span>
+          <span className="ed-writing-row__title">{p.title}</span>
+          <span className="ed-writing-row__date">↗</span>
+        </a>
       ))}
     </section>
   );
@@ -262,7 +270,7 @@ function Contact() {
 /**
  * Editorial home (ADR-0001) — the scroll site at `/`. Replaces the former
  * chat-first `HomePane`. Sections bind to the live catalog: Selected Work ←
- * projects, Writing ← essays, Contact CV ← resume. Chat relocates to the Ask
+ * projects, Writing ← Substack, Contact CV ← resume. Chat relocates to the Ask
  * route (`/chat`), reached from the nav / ⌘K / `/`.
  */
 export function EditorialHome() {

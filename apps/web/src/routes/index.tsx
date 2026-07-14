@@ -8,10 +8,10 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Long NGUYỄN (8bu) - Senior Web Developer. Personal portfolio with selected projects, essays, and a chat surface.",
+          "Long NGUYỄN (8bu) - Senior Web Developer. Personal portfolio with selected work, writing, and a chat surface.",
       },
       { property: "og:title", content: "Long NGUYỄN - portfolio" },
-      { property: "og:description", content: "Selected projects, essays, and a chat surface." },
+      { property: "og:description", content: "Selected work, writing, and a chat surface." },
       { property: "og:image", content: "/og/default.png" },
       { property: "og:type", content: "website" },
     ],

@@ -16,8 +16,8 @@ interface MdxModule {
   frontmatter: Record<string, unknown>;
 }
 
-const PATH_RE = /\/artifacts\/(__fixtures__\/)?(projects|essays|resume|misc)\/[^/]+\.mdx$/;
-const VALID_KINDS: readonly ArtifactKind[] = ["projects", "essays", "resume", "misc"];
+const PATH_RE = /\/artifacts\/(__fixtures__\/)?(projects|resume|misc)\/[^/]+\.mdx$/;
+const VALID_KINDS: readonly ArtifactKind[] = ["projects", "resume", "misc"];
 
 function parsePath(path: string): { kind: ArtifactKind; isFixture: boolean } | null {
   const m = PATH_RE.exec(path);

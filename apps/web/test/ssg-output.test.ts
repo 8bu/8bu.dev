@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "dist", "client");
 const ARTIFACTS_DIR = join(ROOT, "src", "artifacts");
-const ARTIFACT_KINDS = ["projects", "essays", "resume", "misc"] as const;
+const ARTIFACT_KINDS = ["projects", "resume", "misc"] as const;
 
 interface DescriptorRef {
   kind: string;
@@ -44,9 +44,12 @@ beforeAll(() => {
 }, 180_000);
 
 describe("SSG output", () => {
-  it("emits home + gallery HTML", () => {
+  it("emits home HTML", () => {
     expect(existsSync(join(DIST, "index.html"))).toBe(true);
-    expect(existsSync(join(DIST, "artifacts/index.html"))).toBe(true);
+  });
+
+  it("does NOT emit a gallery page (/artifacts deprecated → edge 301)", () => {
+    expect(existsSync(join(DIST, "artifacts/index.html"))).toBe(false);
   });
 
   it("emits per-descriptor HTML for each catalog entry", () => {
@@ -78,7 +81,6 @@ describe("SSG output", () => {
     const sitemap = readFileSync(path, "utf-8");
     expect(sitemap).toContain("<loc>");
     expect(sitemap).toContain("/artifact/projects/wegopro");
-    expect(sitemap).toContain("/artifacts");
   });
 
   it("artifact HTML contains catalog-driven title + og:image meta", () => {

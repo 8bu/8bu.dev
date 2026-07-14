@@ -18,15 +18,6 @@ export interface ProjectGalleryItem {
   href: string;
 }
 
-export interface EssayGalleryItem {
-  slug: string;
-  n: string;
-  title: string;
-  meta: string;
-  dek: string;
-  href: string;
-}
-
 export interface ResumeGalleryItem {
   slug: string;
   title: string;
@@ -45,17 +36,6 @@ function mapProject(d: ArtifactDescriptor): ProjectGalleryItem {
     tags: d.stack.join(" · "),
     desc: d.summary,
     coral: d.order === 1,
-    href: `/artifact/${d.kind}/${d.slug}`,
-  };
-}
-
-function mapEssay(d: ArtifactDescriptor): EssayGalleryItem {
-  return {
-    slug: d.slug,
-    n: String(d.order).padStart(2, "0"),
-    title: d.title,
-    meta: `${d.period} · essay`,
-    dek: d.summary,
     href: `/artifact/${d.kind}/${d.slug}`,
   };
 }
@@ -83,17 +63,7 @@ export function projectsForGallery(): ProjectGalleryItem[] {
     .map(mapProject);
 }
 
-export function essaysForGallery(): EssayGalleryItem[] {
-  return getCatalog()
-    .filter((d) => d.kind === "essays")
-    .map(mapEssay);
-}
-
 export function resumeForGallery(): ResumeGalleryItem | null {
   const resume = getCatalog().find((d) => d.kind === "resume");
   return resume ? mapResume(resume) : null;
-}
-
-export function totalGalleryItems(): number {
-  return projectsForGallery().length + essaysForGallery().length + (resumeForGallery() ? 1 : 0);
 }

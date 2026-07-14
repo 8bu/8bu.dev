@@ -10,7 +10,7 @@ interface LoaderArgs {
   params: { kind: string; slug: string };
 }
 
-const VALID_KINDS: readonly ArtifactKind[] = ["projects", "essays", "resume", "misc"];
+const VALID_KINDS: readonly ArtifactKind[] = ["projects", "resume", "misc"];
 
 /**
  * Loader returns lookup keys only — NOT the descriptor object. The descriptor
