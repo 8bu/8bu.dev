@@ -797,3 +797,30 @@
     background: transparent !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Ask / chat route — editorial palette bridge.
+
+   The /chat + /artifacts UI still renders under [data-theme="press"] and reads
+   its colors from --canvas/--ink/--coral/etc. Until the full Phase-3 re-skin
+   (ADR-0002), remap those token VALUES to the editorial palette so the Ask view
+   reads cream/blue/coral like the home — no layout change, colour only.
+   Loads after portfolio.css, so these win. Does not touch the home (`.ed`
+   scopes its own --ed-* tokens and never reads --canvas).
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-theme="press"] {
+  --canvas: #f4efe2; /* editorial canvas */
+  --ink: #1f2a9e; /* deep-blue ink */
+  --ink-2: #24309a;
+  --ink-3: #5b64ad; /* muted blue — secondary text */
+  --ink-4: #9298c6; /* faint blue — tertiary/labels */
+  --line: #d7d3e2; /* light lavender rule */
+  --line-strong: #1f2a9e;
+  --cream-card: #fcfaf2; /* raised card bg */
+  --cream-2: #ece7db; /* sidebar / panel bg */
+  --coral: #ff4d2e;
+  --coral-2: #db3a12;
+  --coral-tint: #ffd9d0;
+  --navy: #1f2a9e;
+  --navy-soft: #24309a;
+}
