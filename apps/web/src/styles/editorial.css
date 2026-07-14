@@ -22,6 +22,13 @@
   --ed-serif: "Newsreader", "Times New Roman", serif;
   --ed-sans: "Space Grotesk", system-ui, sans-serif;
 
+  /* Global content width. Section backgrounds stay full-bleed; horizontal
+     padding centers a max-width column via `max(gutter, (100%-max)/2)`, so
+     content never stretches past --ed-max on large screens. */
+  --ed-gutter: clamp(24px, 6vw, 120px);
+  --ed-max: 1440px;
+  --ed-pad-x: max(var(--ed-gutter), calc((100% - var(--ed-max)) / 2));
+
   position: relative;
   min-height: 100vh;
   color: var(--ed-ink);
@@ -83,7 +90,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 32px;
+  padding: 18px var(--ed-pad-x);
   z-index: 80;
   background: rgba(244, 239, 226, 0.82);
   backdrop-filter: blur(10px);
@@ -160,6 +167,8 @@
   min-height: 0;
   display: flex;
   align-items: stretch;
+  /* Same centered column as the sections; the rail + content sit inside it. */
+  padding-inline: var(--ed-pad-x);
 }
 .ed-hero__rail {
   flex: 0 0 clamp(44px, 6vw, 84px);
@@ -181,7 +190,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 96px clamp(24px, 6vw, 120px) 32px 0;
+  padding: 96px 0 32px 0;
 }
 .ed-hero__mobiletag {
   display: none;
@@ -250,7 +259,7 @@
 
 /* ── Shared section chrome ──────────────────────────────────────────── */
 .ed-section {
-  padding: 110px clamp(24px, 6vw, 120px) 90px;
+  padding: 110px var(--ed-pad-x) 90px;
 }
 .ed-section-head {
   display: flex;
@@ -420,7 +429,7 @@
 
 /* ── About ──────────────────────────────────────────────────────────── */
 .ed-about {
-  padding: 90px clamp(24px, 6vw, 120px);
+  padding: 90px var(--ed-pad-x);
   background: rgba(31, 42, 158, 0.045);
   border-top: 1px solid rgba(31, 42, 158, 0.2);
 }
@@ -534,7 +543,7 @@
 
 /* ── Stack ──────────────────────────────────────────────────────────── */
 .ed-stack {
-  padding: 40px clamp(24px, 6vw, 120px) 100px;
+  padding: 40px var(--ed-pad-x) 100px;
 }
 .ed-stack__grid {
   display: grid;
@@ -581,7 +590,7 @@
 
 /* ── Contact ────────────────────────────────────────────────────────── */
 .ed-contact {
-  padding: 110px clamp(24px, 6vw, 120px) 60px;
+  padding: 110px var(--ed-pad-x) 60px;
   background: var(--ed-ink);
   color: var(--ed-canvas);
   position: relative;
@@ -719,7 +728,7 @@
     display: none;
   }
   .ed-hero__content {
-    padding: 104px 20px 28px 20px;
+    padding: 104px 0 28px 0;
   }
   .ed-hero__mobiletag {
     display: block;
