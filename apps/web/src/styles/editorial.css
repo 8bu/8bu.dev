@@ -155,7 +155,7 @@
     background 0.18s ease,
     color 0.18s ease;
 }
-.ed-ask-btn:hover {
+.ed a.ed-ask-btn:hover {
   background: var(--ed-coral);
   color: var(--ed-canvas);
 }
@@ -326,7 +326,6 @@
   cursor: pointer;
   transition:
     background 0.3s,
-    padding-left 0.4s var(--ed-spring),
     opacity 0.8s var(--ed-spring),
     transform 0.8s var(--ed-spring);
   display: block;
@@ -334,7 +333,6 @@
 }
 .ed-work-row:hover {
   background: rgba(255, 77, 46, 0.05);
-  padding-left: 14px;
 }
 .ed-work-cols {
   display: grid;
@@ -516,7 +514,7 @@
   font-size: clamp(20px, 2.1vw, 26px);
   line-height: 1.5;
 }
-.ed-about__lead::first-letter {
+.ed-about__dropcap {
   font-family: var(--ed-serif);
   font-size: 3.1em;
   line-height: 0.68;
@@ -542,6 +540,14 @@
 .ed-about__tags span {
   border: 1px solid rgba(31, 42, 158, 0.4);
   padding: 6px 12px;
+  cursor: default;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.ed-about__tags span:hover {
+  color: var(--ed-coral);
+  border-color: var(--ed-coral);
 }
 
 /* ── Writing ────────────────────────────────────────────────────────── */
@@ -553,6 +559,14 @@
   border-bottom: 1px dashed var(--ed-ink-35);
   padding: 20px 0;
   color: var(--ed-ink);
+}
+/* `.ed a.ed-writing-row` (0,3,1) carries the hover colour AND the reveal props —
+   otherwise the generic `.ed [data-reveal]` transition clobbers the colour fade. */
+.ed a.ed-writing-row {
+  transition:
+    color 0.25s ease,
+    opacity 0.8s var(--ed-spring),
+    transform 0.8s var(--ed-spring);
 }
 .ed-writing-row:hover {
   color: var(--ed-coral);
@@ -568,11 +582,16 @@
 .ed-writing-row__date {
   font-size: 11px;
   color: var(--ed-ink-60);
+  transition: transform 0.4s var(--ed-spring);
+}
+.ed-writing-row:hover .ed-writing-row__date {
+  transform: translateX(6px);
+  color: var(--ed-coral);
 }
 
 /* ── Stack ──────────────────────────────────────────────────────────── */
 .ed-stack {
-  padding: 40px var(--ed-pad-x) 100px;
+  padding: 100px var(--ed-pad-x) 100px;
 }
 .ed-stack__grid {
   display: grid;
@@ -583,12 +602,14 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   border-top: 1px solid var(--ed-ink);
   border-left: 1px solid var(--ed-ink);
+  margin-top: 36px;
 }
 .ed-stack__cell {
   position: relative;
   border-right: 1px solid var(--ed-ink);
   border-bottom: 1px solid var(--ed-ink);
   padding: 20px;
+  cursor: pointer;
   transition: opacity 0.45s var(--ed-spring);
 }
 /* Focus-dim: hovering the case eases the other drawers back so the one under
@@ -686,6 +707,7 @@
   color: var(--ed-canvas);
   border-bottom: 2px solid var(--ed-coral);
   line-height: 1.2;
+  transition: color 0.25s ease;
 }
 .ed-contact a.ed-contact__email:hover {
   color: var(--ed-coral);
@@ -703,10 +725,15 @@
   color: var(--ed-canvas);
   border: 1px solid rgba(244, 239, 226, 0.4);
   padding: 8px 14px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.4s var(--ed-spring);
 }
 .ed-contact__links a:hover {
   border-color: var(--ed-coral);
   color: var(--ed-coral);
+  transform: translateY(-3px);
 }
 .ed-contact__foot {
   position: relative;

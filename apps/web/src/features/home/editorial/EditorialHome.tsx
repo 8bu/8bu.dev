@@ -156,8 +156,9 @@ function About() {
         </div>
         <div className="ed-about__prose" data-reveal>
           <p className="ed-about__lead">
-            Ten years in, I've stopped caring which framework won this year. What stuck is a simpler
-            test: did the thing we shipped actually make someone's day easier?
+            <span className="ed-about__dropcap">T</span>en years in, I've stopped caring which
+            framework won this year. What stuck is a simpler test: did the thing we shipped actually
+            make someone's day easier?
           </p>
           <p>
             I read the problem before I open the editor. I write tests because future-me is
@@ -214,8 +215,9 @@ function Writing() {
 function Stack() {
   return (
     <section id="stack" className="ed-stack">
-      <div className="ed-eyebrow" data-reveal>
-        STACK — THE TYPE CASE
+      <div className="ed-section-head" data-reveal>
+        <h2>Stack</h2>
+        <span className="ed-section-head__meta">THE TYPE CASE</span>
       </div>
       <div className="ed-stack__grid" data-reveal>
         {STACK_GROUPS.map((s) => (
