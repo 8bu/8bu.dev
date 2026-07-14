@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   projectsForGallery,
@@ -265,10 +266,11 @@ function Contact() {
  * route (`/chat`), reached from the nav / ⌘K / `/`.
  */
 export function EditorialHome() {
-  useReveal();
+  const rootRef = useRef<HTMLDivElement>(null);
+  useReveal(rootRef);
   useAskShortcuts();
   return (
-    <div className="ed">
+    <div className="ed" ref={rootRef}>
       <div className="ed-grain" />
       <Nav />
       <main>

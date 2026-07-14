@@ -1,41 +1,54 @@
-import { useEffect } from "react";
+import { useEffect, type RefObject } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 /**
- * Reveal-on-scroll for `[data-reveal]` elements. Ported from the prototype's
- * IntersectionObserver: elements start translated+transparent and settle when
- * they enter the viewport. Fully bypassed under `prefers-reduced-motion` — the
- * elements are left at their natural (visible) state, no observer created.
+ * Reveal-on-scroll for `[data-reveal]` elements + editorial smooth-scroll.
+ * Ported from the prototype's IntersectionObserver.
+ *
+ * Reveal is driven by a **class toggle**, never inline styles: the hidden
+ * state lives in CSS behind `.ed-js` (added here on mount) so no-JS / SSR
+ * renders content visible (SEO-safe), and the `.ed-in` reveal class settles it.
+ * Crucially this leaves each element's CSS `transition` intact — an inline
+ * `transition` here would override authored hovers (e.g. the work-row indent).
+ *
+ * Smooth-scroll is set on `<html>` for the lifetime of the home route only, so
+ * anchor jumps glide (prototype `html { scroll-behavior: smooth }`) without
+ * leaking into the chat pane's programmatic autoscroll.
+ *
+ * Under `prefers-reduced-motion` everything is bypassed: no `.ed-js`, no
+ * observer, no smooth-scroll — elements stay at their natural visible state.
  */
-export function useReveal(): void {
+export function useReveal(rootRef: RefObject<HTMLElement | null>): void {
   useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
+
+    const de = document.documentElement;
+    const prevScroll = de.style.scrollBehavior;
+    de.style.scrollBehavior = "smooth";
+    root.classList.add("ed-js");
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const en of entries) {
           if (en.isIntersecting) {
-            const el = en.target as HTMLElement;
-            el.style.opacity = "1";
-            el.style.transform = "translateY(0)";
-            io.unobserve(el);
+            en.target.classList.add("ed-in");
+            io.unobserve(en.target);
           }
         }
       },
       { threshold: 0.12 },
     );
+    for (const el of root.querySelectorAll("[data-reveal]")) io.observe(el);
 
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
-    for (const el of els) {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(26px)";
-      el.style.transition =
-        "opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1)";
-      io.observe(el);
-    }
-    return () => io.disconnect();
-  }, []);
+    return () => {
+      io.disconnect();
+      de.style.scrollBehavior = prevScroll;
+      root.classList.remove("ed-js");
+    };
+  }, [rootRef]);
 }
 
 /**

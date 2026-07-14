@@ -41,6 +41,28 @@
   color: var(--ed-coral);
 }
 
+/* ── Reveal-on-scroll (class-driven, see hooks.ts) ──────────────────────
+   The hidden state is gated on `.ed-js` (added by JS on mount) so no-JS / SSR
+   renders content visible. Transition here lists opacity/transform ONLY;
+   dual-purpose elements with their own hover transition (e.g. .ed-work-row)
+   must re-list these props in their own rule or the hover would clobber them.
+   Scoped `.ed [data-reveal]` (0,2,0) so it outranks `.ed a` (0,1,1) — otherwise
+   every reveal anchor (work/writing rows, contact) would inherit `transition:
+   color` and pop in instead of rising. */
+.ed [data-reveal] {
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ed-js [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+}
+.ed-js [data-reveal].ed-in {
+  opacity: 1;
+  transform: none;
+}
+
 /* ── Film grain overlay ─────────────────────────────────────────────── */
 .ed-grain {
   position: fixed;
@@ -258,12 +280,17 @@
 }
 
 /* ── Selected Work ──────────────────────────────────────────────────── */
-.ed-work-row {
+/* `.ed a.ed-work-row` (0,2,1) so this wins over both `.ed a` (transition:color)
+   and the generic `.ed [data-reveal]` — it must carry the hover props AND the
+   reveal props together (a single `transition` declaration is not additive). */
+.ed a.ed-work-row {
   border-bottom: 1px dashed var(--ed-ink-35);
   cursor: pointer;
   transition:
     background 0.3s,
-    padding-left 0.35s;
+    padding-left 0.35s,
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   display: block;
   color: inherit;
 }
