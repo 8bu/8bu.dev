@@ -159,6 +159,10 @@
   filter: blur(90px);
   animation: ed-drift 28s ease-in-out infinite alternate;
   z-index: 0;
+  /* Promote to its own layer so the 90px blur is rasterized once and the drift
+     is GPU-composited — otherwise scaling re-rasterizes the blur every frame,
+     which flickers and janks scrolling. */
+  will-change: transform;
 }
 .ed-hero__body {
   position: relative;
@@ -217,14 +221,15 @@
   color: var(--ed-coral);
   mix-blend-mode: multiply;
   z-index: -1;
+  /* Static print misregistration offset. The offset used to be animated
+     (ed-ink), but at hero scale on large screens the wobbling ghost read as a
+     flashing coral edge — a fixed offset keeps the print look, calm. */
+  transform: translate(6px, 6px);
 }
 .ed-hero-name--1 {
   font-weight: 400;
   font-size: clamp(96px, 19vw, 250px);
   line-height: 0.92;
-}
-.ed-hero-name--1::before {
-  animation: ed-ink 7s ease-in-out infinite alternate;
 }
 .ed-hero-name--2 {
   font-weight: 700;
@@ -233,9 +238,6 @@
   letter-spacing: -0.01em;
   margin-left: clamp(60px, 15vw, 220px);
   margin-top: 0.06em;
-}
-.ed-hero-name--2::before {
-  animation: ed-ink 9s ease-in-out infinite alternate-reverse;
 }
 .ed-hero__cta {
   display: flex;
