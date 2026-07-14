@@ -470,7 +470,9 @@
 .ed-about__prose {
   max-width: 520px;
 }
-.ed-about__lead {
+/* `.ed-about__prose .ed-about__lead` (0,2,0) so the large serif intro wins over
+   `.ed-about__prose p` (0,1,1) — otherwise the lead collapses to 14px body. */
+.ed-about__prose .ed-about__lead {
   margin: 0 0 22px;
   font-family: var(--ed-serif);
   font-size: clamp(20px, 2.1vw, 26px);
