@@ -29,6 +29,33 @@
   --ed-max: 1440px;
   --ed-pad-x: max(var(--ed-gutter), calc((100% - var(--ed-max)) / 2));
 
+  /* Spring easing (damped, ~4% overshoot then settle). Drives every entrance
+     and hover motion so the whole page shares one physical feel. Values >1
+     are the overshoot a cubic-bezier can't reach. Unsupported browsers fall
+     back to `ease`. */
+  --ed-spring: linear(
+    0,
+    0.006,
+    0.025,
+    0.101,
+    0.539,
+    0.721,
+    0.849,
+    0.937,
+    0.991,
+    1.023,
+    1.037,
+    1.041,
+    1.038,
+    1.03,
+    1.006,
+    0.997,
+    0.992,
+    0.998,
+    1.001,
+    1
+  );
+
   position: relative;
   min-height: 100vh;
   color: var(--ed-ink);
@@ -58,8 +85,8 @@
    color` and pop in instead of rising. */
 .ed [data-reveal] {
   transition:
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.8s var(--ed-spring),
+    transform 0.8s var(--ed-spring);
 }
 .ed-js [data-reveal] {
   opacity: 0;
@@ -204,7 +231,7 @@
   margin-bottom: 22px;
 }
 .ed-hero__names {
-  animation: ed-rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ed-rise 1s var(--ed-spring) both;
 }
 .ed-hero-name {
   position: relative;
@@ -251,12 +278,12 @@
   max-width: 420px;
   font-size: 12.5px;
   line-height: 1.8;
-  animation: ed-rise 1s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ed-rise 1s 0.15s var(--ed-spring) both;
 }
 .ed-hero__jump {
   font-family: var(--ed-serif);
   font-size: 20px;
-  animation: ed-rise 1s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ed-rise 1s 0.25s var(--ed-spring) both;
 }
 
 /* ── Shared section chrome ──────────────────────────────────────────── */
@@ -299,9 +326,9 @@
   cursor: pointer;
   transition:
     background 0.3s,
-    padding-left 0.35s,
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    padding-left 0.4s var(--ed-spring),
+    opacity 0.8s var(--ed-spring),
+    transform 0.8s var(--ed-spring);
   display: block;
   color: inherit;
 }
@@ -342,7 +369,7 @@
   max-height: 0;
   opacity: 0;
   transition:
-    max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    max-height 0.6s var(--ed-spring),
     opacity 0.45s ease;
 }
 .ed-work-row:hover .ed-work-panel-wrap {
@@ -562,7 +589,7 @@
   border-right: 1px solid var(--ed-ink);
   border-bottom: 1px solid var(--ed-ink);
   padding: 20px;
-  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.45s var(--ed-spring);
 }
 /* Focus-dim: hovering the case eases the other drawers back so the one under
    the cursor reads on its own. Restrained — no fills, no shadows. Touch stays flat. */
@@ -594,7 +621,7 @@
   background: var(--ed-coral);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.45s var(--ed-spring);
 }
 .ed-stack__cell:hover .ed-stack__group {
   color: var(--ed-coral);
