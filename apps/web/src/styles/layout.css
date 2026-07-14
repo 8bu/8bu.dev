@@ -1603,3 +1603,34 @@ body,
     display: none;
   }
 }
+
+/* ─── Sidebar home link — discoverable "← home" affordance ──────────────
+ * The wordmark doubles as the home link (Link to "/"), but on its own it
+ * reads as a static logo. A persistent faint "← home" chip on the right makes
+ * the route back to the editorial home obvious; both go coral on hover. */
+.v1-home-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.v1-home-hint {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  white-space: nowrap;
+  transition: color 120ms ease;
+}
+.v1-home-link .wm-text {
+  transition: color 120ms ease;
+}
+.v1-home-link:hover .wm-text,
+.v1-home-link:hover .v1-home-hint {
+  color: var(--coral);
+}

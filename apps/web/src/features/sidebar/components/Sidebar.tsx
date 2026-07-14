@@ -41,16 +41,11 @@ export function Sidebar() {
         <Link
           to="/"
           onClick={() => setSidebarOpen(false)}
-          style={{
-            display: "block",
-            marginBottom: 4,
-            textDecoration: "none",
-            color: "inherit",
-            cursor: "pointer",
-          }}
+          className="v1-home-link"
           aria-label="Back to home"
         >
           <Wordmark sub={null} size={13} />
+          <span className="v1-home-hint">← home</span>
         </Link>
         <NewChatButton />
         <div className="v1-section-label">Resources</div>
