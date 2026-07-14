@@ -558,15 +558,49 @@
   border-left: 1px solid var(--ed-ink);
 }
 .ed-stack__cell {
+  position: relative;
   border-right: 1px solid var(--ed-ink);
   border-bottom: 1px solid var(--ed-ink);
   padding: 20px;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Focus-dim: hovering the case eases the other drawers back so the one under
+   the cursor reads on its own. Restrained — no fills, no shadows. Touch stays flat. */
+@media (hover: hover) {
+  .ed-stack__grid:hover .ed-stack__cell {
+    opacity: 0.32;
+  }
+  .ed-stack__grid:hover .ed-stack__cell:hover {
+    opacity: 1;
+  }
 }
 .ed-stack__group {
+  position: relative;
+  display: inline-block;
   font-family: var(--ed-serif);
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 14px;
+  transition: color 0.3s ease;
+}
+/* A hairline coral rule draws under the title on hover (type-specimen underscore). */
+.ed-stack__group::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--ed-coral);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ed-stack__cell:hover .ed-stack__group {
+  color: var(--ed-coral);
+}
+.ed-stack__cell:hover .ed-stack__group::after {
+  transform: scaleX(1);
 }
 .ed-stack__items {
   display: flex;
@@ -582,6 +616,10 @@
   color: rgba(31, 42, 158, 0.85);
   border-bottom: 1px dotted rgba(31, 42, 158, 0.22);
   padding-bottom: 6px;
+  transition: color 0.2s ease;
+}
+.ed-stack__item:hover {
+  color: var(--ed-coral);
 }
 .ed-stack__item span:last-child {
   font-size: 10px;
